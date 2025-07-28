@@ -1,15 +1,15 @@
 import axios from "axios";
 import { useContext, useEffect } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext.jsx";
 
 
 const useAxiosSecure = () => {
   const { user } = useContext(AuthContext);
-  console.log("🚀 ~ useAxiosSecure ~ accessToken:", user.accessToken);
+  console.log("🚀 ~ useAxiosSecure ~ accessToken:", user?.accessToken);
   const instance = axios.create({
     baseURL: "http://localhost:3000",
     headers: {
-      Authorization: `Bearer ${user.accessToken}`,
+      Authorization: `Bearer ${user?.accessToken}`,
     },
   });
 

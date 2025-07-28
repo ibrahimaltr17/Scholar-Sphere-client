@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Link, NavLink } from 'react-router';
+import { Link, NavLink, useNavigate } from 'react-router';
 import './Navbar.css'
 import { AuthContext } from '../../context/AuthContext';
 import { showError, showWarning } from '../../utility/sweetAlert';
@@ -8,16 +8,18 @@ import logo from '../../assets/logo.png'
 const Navbar = () => {
     const links = <>
         <NavLink className='hover:text-amber-900 text-amber-900' to="/">Home</NavLink>
-        <NavLink className='hover:text-amber-900 text-amber-900' to="/availableFood">Available Foods</NavLink>
-        <NavLink className='hover:text-amber-900 text-amber-900' to="/addFood">Add Food </NavLink>
+        <NavLink className='hover:text-amber-900 text-amber-900' to="/dashboard">Dashboard</NavLink>
+        {/* <NavLink className='hover:text-amber-900 text-amber-900' to="/addFood">Add Food </NavLink>
         <NavLink className='hover:text-amber-900 text-amber-900' to="/myFood">Manage My Foods</NavLink>
-        <NavLink className='hover:text-amber-900 text-amber-900' to="/myRequestedFoods">My Food Request</NavLink>
+        <NavLink className='hover:text-amber-900 text-amber-900' to="/myRequestedFoods">My Food Request</NavLink> */}
     </>
 
     const { user, logOut } = useContext(AuthContext)
+    const navigate = useNavigate();
 
     const handleLogOut = () => {
         logOut().then(() => {
+            navigate('/');
             showWarning('Logged Out Successfully', 'See you again soon!')
         }).catch((error) => {
             showError(error)

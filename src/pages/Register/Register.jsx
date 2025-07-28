@@ -1,184 +1,140 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import Swal from 'sweetalert2';
 import { Link, useNavigate } from 'react-router';
 import { updateProfile } from 'firebase/auth';
 import { AuthContext } from '../../context/AuthContext';
 import { showError, showSuccess } from '../../utility/sweetAlert';
+import districtsData from '../../json/districts.json';
+import upazilasData from '../../json/upazilas.json';
+import axios from 'axios';
 
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
-const imageBB_API_KEY = import.meta.env.VITE_IMAGEBB_KEY;
+
 
 const Register = () => {
-    const { createUser } = useContext(AuthContext);
-    const navigate = useNavigate();
+  const { createUser } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-    const [districts, setDistricts] = useState([]);
-    const [upazilas, setUpazilas] = useState([]);
-    const [selectedDistrict, setSelectedDistrict] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
+  const [districts, setDistricts] = useState([]);
+  const [upazilas, setUpazilas] = useState([]);
+  const [filteredUpazilas, setFilteredUpazilas] = useState([]);
+  const [selectedDistrictId, setSelectedDistrictId] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
-    // Fetch district/upazila data from GitHub or local JSON
-    useEffect(() => {
-        fetch('https://github.com/nuhil/bangladesh-geocode/blob/master/districts/districts.json')
-            .then(res => res.json())
-            .then(data => {
-                setDistricts(data);
-            });
-    }, []);
+  // Local state for form
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    blood: '',
+    district: '',
+    upazila: '',
+    password: '',
+    confirm_password: '',
+    // photo removed from formData
+  });
 
-    const handleDistrictChange = (e) => {
-        const selected = e.target.value;
-        setSelectedDistrict(selected);
-        const selectedData = districts.find(d => d.name === selected);
-        setUpazilas(selectedData?.upazilas || []);
-    };
+  useEffect(() => {
+    setDistricts(districtsData);
+    setUpazilas(upazilasData);
+  }, []);
 
-    const handleSignUp = async (e) => {
-        e.preventDefault();
-        const form = e.target;
-        const formData = new FormData(form);
+  const handleDistrictChange = (e) => {
+    const selectedDistrictName = e.target.value;
+    setFormData({ ...formData, district: selectedDistrictName, upazila: '' }); // reset upazila on district change
 
-        const email = formData.get('email');
-        const password = formData.get('password');
-        const confirmPassword = formData.get('confirm_password');
-        const name = formData.get('name');
-        const bloodGroup = formData.get('blood_group');
-        const district = formData.get('district');
-        const upazila = formData.get('upazila');
-        const image = formData.get('avatar');
+    // Find district ID by name
+    const districtObj = districts.find(d => d.name === selectedDistrictName);
+    const districtId = districtObj ? districtObj.id : null;
+    setSelectedDistrictId(districtId);
 
-        if (password !== confirmPassword) {
-            return showError("Password Mismatch", "Passwords do not match.");
-        }
+    // Filter upazilas by district_id
+    if (districtId) {
+      const filtered = upazilas.filter(u => u.district_id === districtId);
+      setFilteredUpazilas(filtered);
+    } else {
+      setFilteredUpazilas([]);
+    }
+  };
 
-        try {
-            // Upload avatar to imageBB
-            const imageForm = new FormData();
-            imageForm.append("image", image);
-            const imageRes = await fetch(`https://api.imgbb.com/1/upload?key=${imageBB_API_KEY}`, {
-                method: "POST",
-                body: imageForm,
-            });
-            const imageData = await imageRes.json();
-            const photoURL = imageData.data.url;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-            // Create user in Firebase
-            const result = await createUser(email, password);
-            await updateProfile(result.user, {
-                displayName: name,
-                photoURL,
-            });
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    const { name, email, password, confirm_password, blood, district, upazila } = formData;
 
-            // Save user to database
-            const newUser = {
-                email,
-                name,
-                photo: photoURL,
-                bloodGroup,
-                district,
-                upazila,
-                role: "donor",
-                status: "active",
-                creationTime: result.user?.metadata?.creationTime,
-                lastSignInTime: result.user?.metadata?.lastSignInTime,
-            };
+    if (password !== confirm_password) {
+      return showError('Passwords do not match!');
+    }
 
-            const res = await fetch('https://server-bloodbridge.vercel.app/users', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newUser),
-            });
+    try {
+      // No image upload here
 
-            const dbResult = await res.json();
-            if (dbResult.insertedId || dbResult.acknowledged) {
-                showSuccess("Account Created", "Welcome to BloodBridge!");
-                form.reset();
-                navigate('/');
-            }
-        } catch (error) {
-            showError("Registration Failed", error.message);
-        }
-    };
+      // Create user in Firebase
+      const res = await createUser(email, password);
+      await updateProfile(res.user, {
+        displayName: name,
+        // photoURL removed
+      });
 
-    return (
-        <div className='bg-orange-600 min-h-screen lg:flex relative'>
-            <Link to="/"><button className='btn btn-circle absolute right-4 top-4'>X</button></Link>
+      // Save user info to database
+      const userInfo = {
+        name,
+        email,
+        blood,
+        district,
+        upazila,
+        role: 'donor',
+        status: 'active',
+        // image removed
+      };
 
-            <div className='w-5/12 hidden lg:flex h-screen px-5 text-white text-center items-center justify-center'>
-                <h1 className='text-5xl font-bold'>Join BloodBridge Today!</h1>
-            </div>
+      await axios.post(`http://localhost:3000/get-users`, userInfo);
+      showSuccess('Account Created', 'Welcome to BloodBridge!');
+      navigate('/');
+    } catch (err) {
+      showError(err.message);
+    }
+  };
 
-            <div className='text-white lg:text-black lg:bg-white rounded-l-2xl w-full lg:w-7/12 flex justify-center items-center py-12'>
-                <div className='w-full max-w-md px-4'>
-                    <h3 className='text-3xl font-bold text-center mb-4'>Register Now</h3>
-                    <form onSubmit={handleSignUp}>
-                        <label className="label">Name</label>
-                        <input type="text" name="name" className="input text-black w-full" required />
+  return (
+    <div className="w-full max-w-2xl mx-auto bg-white p-8 shadow-lg rounded-lg my-10">
+      <h2 className="text-3xl font-bold text-center text-red-600 mb-6">Register</h2>
+      <form onSubmit={handleSignUp} className="space-y-4">
+        <input type="text" name="name" onChange={handleInputChange} placeholder="Full Name" required className="input input-bordered w-full" />
+        <input type="email" name="email" onChange={handleInputChange} placeholder="Email" required className="input input-bordered w-full" />
 
-                        <label className="label">Email</label>
-                        <input type="email" name="email" className="input text-black w-full" required />
+        <select name="blood" onChange={handleInputChange} required className="select select-bordered w-full">
+          <option value="">Select Blood Group</option>
+          {bloodGroups.map(b => <option key={b} value={b}>{b}</option>)}
+        </select>
 
-                        <label className="label">Avatar</label>
-                        <input type="file" name="avatar" accept="image/*" className="file-input file-input-bordered w-full text-black" required />
+        <select name="district" onChange={handleDistrictChange} required className="select select-bordered w-full" value={formData.district}>
+          <option value="">Select District</option>
+          {districts.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
+        </select>
 
-                        <label className="label">Blood Group</label>
-                        <select name="blood_group" className="select text-black w-full" required>
-                            <option value="">Select</option>
-                            {bloodGroups.map(group => (
-                                <option key={group} value={group}>{group}</option>
-                            ))}
-                        </select>
+        <select name="upazila" onChange={handleInputChange} required className="select select-bordered w-full" value={formData.upazila}>
+          <option value="">Select Upazila</option>
+          {filteredUpazilas.map(up => <option key={up.id} value={up.name}>{up.name}</option>)}
+        </select>
 
-                        <label className="label">District</label>
-                        <select name="district" className="select text-black w-full" required onChange={handleDistrictChange}>
-                            <option value="">Select</option>
-                            {districts.map(d => (
-                                <option key={d.name} value={d.name}>{d.name}</option>
-                            ))}
-                        </select>
+        <input type={showPassword ? 'text' : 'password'} name="password" onChange={handleInputChange} placeholder="Password" required className="input input-bordered w-full" />
+        <input type={showPassword ? 'text' : 'password'} name="confirm_password" onChange={handleInputChange} placeholder="Confirm Password" required className="input input-bordered w-full" />
 
-                        <label className="label">Upazila</label>
-                        <select name="upazila" className="select text-black w-full" required>
-                            <option value="">Select</option>
-                            {upazilas.map((u, index) => (
-                                <option key={index} value={u}>{u}</option>
-                            ))}
-                        </select>
+        <label className="label cursor-pointer">
+          <span className="label-text">Show Password</span>
+          <input type="checkbox" className="toggle toggle-error" onChange={() => setShowPassword(!showPassword)} />
+        </label>
 
-                        <label className="label">Password</label>
-                        <div className="relative">
-                            <input
-                                type={showPassword ? 'text' : 'password'}
-                                name="password"
-                                className="input text-black w-full"
-                                required
-                                minLength={6}
-                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
-                                title="At least 6 characters, with uppercase, lowercase, and number"
-                            />
-                            <button
-                                type="button"
-                                className="absolute top-3 right-3"
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                {showPassword ? <FaEyeSlash /> : <FaEye />}
-                            </button>
-                        </div>
-
-                        <label className="label">Confirm Password</label>
-                        <input type="password" name="confirm_password" className="input text-black w-full" required />
-
-                        <button type="submit" className="btn btn-neutral mt-5 w-full">Register</button>
-                    </form>
-
-                    <p className="mt-4 text-center">
-                        Already have an account? <Link to="/login" className="text-blue-500">Login</Link>
-                    </p>
-                </div>
-            </div>
-        </div>
-    );
+        <button type="submit" className="btn bg-red-600 text-white w-full hover:bg-red-700">Register</button>
+      </form>
+      <p className="mt-4 text-center text-sm">
+        Already have an account? <Link to="/login" className="text-red-500 font-semibold">Login</Link>
+      </p>
+    </div>
+  );
 };
 
 export default Register;

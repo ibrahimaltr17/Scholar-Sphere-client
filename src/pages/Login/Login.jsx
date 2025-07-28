@@ -7,6 +7,7 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import { showError, showSuccess, showWarning } from '../../utility/sweetAlert';
 import { AuthContext } from '../../context/AuthContext';
 
+
 const Login = () => {
     const [error, setError] = useState("")
     const { signInUser, googleLogIn, forgetPass } = useContext(AuthContext)
@@ -28,7 +29,7 @@ const Login = () => {
                     email,
                     lastSignInTime: result.user?.metadata?.lastSignInTime
                 }
-                fetch('https://server-leaf-log.vercel.app/users', {
+                fetch('https://localhost:3000/get-users', {
                     method: 'PATCH',
                     headers: {
                         'content-type': 'application/json'

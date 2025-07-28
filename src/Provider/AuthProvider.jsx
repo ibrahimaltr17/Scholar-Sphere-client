@@ -49,27 +49,31 @@ const AuthProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       console.log("🚀 ~ unsubscribe ~ currentUser:", currentUser);
+
+      const token = await currentUser.getIdToken();
+      console.log("🔥 Firebase ID Token:", token);
 
       if (currentUser) {
         axiosPublic
-          .post("/users", {
+          .post("/get-users", {
             email: currentUser.email,
-            role: "user",
+            role: "donor",
             loginCount: 1,
           })
           .then((res) => {
             setUser(currentUser);
             console.log(res.data);
           });
+      } else {
+        setUser(null); 
       }
 
       setLoading(false);
     });
-    return () => {
-      unsubscribe();
-    };
+
+    return () => unsubscribe();
   }, []);
 
 
