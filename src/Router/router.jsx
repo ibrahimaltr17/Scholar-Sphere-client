@@ -5,6 +5,13 @@ import Root from "../Layout/Root";
 import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
+import DashboardLayout from "../layout/DashboardLayout";
+import ManageUser from "../pages/ManageUser/ManageUser";
+import ContentManagement from "../pages/ContentManagement/ContentManagement";
+import AllRequest from "../pages/AllRequest/AllRequest";
+import MyRequest from "../pages/MyRequest/MyRequest";
+import CreateRequest from "../pages/CreateRequest/CreateRequest";
+import ProfilePage from "../pages/ProfilePage/ProfilePage";
 import Dashboard from "../pages/Dashboard/Dashboard";
 
 export const router = createBrowserRouter([
@@ -18,8 +25,39 @@ export const router = createBrowserRouter([
       },
       {
         path: '/dashboard',
-        Component: Dashboard
+        element: <DashboardLayout />,
+        children: [
+          {
+            index: true, // This sets the default dashboard page
+            Component: Dashboard
+          },
+          {
+            path: 'profile',
+            Component: ProfilePage
+          },
+          {
+            path: 'all-blood-donation-request',
+            Component: AllRequest
+          },
+          {
+            path: 'content-management',
+            Component: ContentManagement
+          },
+          {
+            path: 'my-donation-requests',
+            Component: MyRequest
+          },
+          {
+            path: 'create-donation-request',
+            Component: CreateRequest
+          },
+          {
+            path: 'all-users',
+            Component: ManageUser
+          }
+        ]
       }
+
     ]
   },
   {
@@ -29,5 +67,6 @@ export const router = createBrowserRouter([
   {
     path: '/signup',
     Component: Register
-  }
+  },
+
 ]);
