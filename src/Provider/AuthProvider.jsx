@@ -1,33 +1,39 @@
-import React, { useEffect, useState } from 'react';
-import { AuthContext } from '../context/AuthContext';
-import { createUserWithEmailAndPassword, deleteUser, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from 'firebase/auth';
-import { GoogleAuthProvider } from 'firebase/auth';
-import { auth } from '../firebase/firebase.init';
-import useAxiosPublic from '../hooks/axiosPublic';
-// import { GoogleAuthProvider } from 'firebase/auth/web-extension';
+import React, { useEffect, useState } from "react";
+import { AuthContext } from "../context/AuthContext";
+import {
+  createUserWithEmailAndPassword,
+  deleteUser,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  updateProfile,
+  GoogleAuthProvider,
+} from "firebase/auth";
+import { auth } from "../firebase/firebase.init";
+import useAxiosPublic from "../hooks/axiosPublic";
 
 const AuthProvider = ({ children }) => {
-
   const [user, setUser] = useState(null);
+  const [accessToken, setAccessToken] = useState(null); // 🔑 store token
+  const [loading, setLoading] = useState(true);
 
-  const [loading, setLoading] = useState(true)
-
-  const axiosPublic = useAxiosPublic()
+  const axiosPublic = useAxiosPublic();
 
   const createUser = (email, password) => {
-    setLoading(true)
-    return createUserWithEmailAndPassword(auth, email, password)
+    setLoading(true);
+    return createUserWithEmailAndPassword(auth, email, password);
   };
 
   const signInUser = (email, password) => {
-    setLoading(true)
+    setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
   const forgetPass = (email) => {
-    return sendPasswordResetEmail(auth, email)
-  }
-
+    return sendPasswordResetEmail(auth, email);
+  };
 
   const providerGoogle = new GoogleAuthProvider();
 
@@ -36,30 +42,32 @@ const AuthProvider = ({ children }) => {
   };
 
   const updateUser = (updatedData) => {
-    return updateProfile(auth.currentUser, updatedData)
-  }
+    return updateProfile(auth.currentUser, updatedData);
+  };
 
   const removeUser = (user) => {
     return deleteUser(user);
   };
 
-
   const logOut = () => {
-    return signOut(auth)
-  }
+    setAccessToken(null); 
+    return signOut(auth);
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       console.log("🚀 ~ unsubscribe ~ currentUser:", currentUser);
 
-      const token = await currentUser.getIdToken();
-      console.log("🔥 Firebase ID Token:", token);
-
       if (currentUser) {
+        const token = await currentUser.getIdToken(); // ✅ fetch token
+        console.log("🔥 Firebase ID Token:", token);
+
+        setAccessToken(token); // ✅ save in state
+
         axiosPublic
           .post("/get-users", {
             email: currentUser.email,
-            role: "donor",
+            role: "user",
             loginCount: 1,
           })
           .then((res) => {
@@ -67,7 +75,8 @@ const AuthProvider = ({ children }) => {
             console.log(res.data);
           });
       } else {
-        setUser(null); 
+        setUser(null);
+        setAccessToken(null);
       }
 
       setLoading(false);
@@ -76,9 +85,10 @@ const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-
   const authData = {
     user,
+    setUser,
+    accessToken, // ✅ provide to context
     loading,
     setLoading,
     createUser,
@@ -88,9 +98,11 @@ const AuthProvider = ({ children }) => {
     updateUser,
     removeUser,
     logOut,
-  }
+  };
 
-  return <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>
+  );
 };
 
 export default AuthProvider;

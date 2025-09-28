@@ -10,7 +10,7 @@ import { AuthContext } from '../../context/AuthContext';
 
 const Login = () => {
     const [error, setError] = useState("")
-    const { signInUser, googleLogIn, forgetPass } = useContext(AuthContext)
+    const { signInUser, googleLogIn, forgetPass, setUser } = useContext(AuthContext)
     const location = useLocation();
     const navigate = useNavigate();
     const emailRef = useRef()
@@ -22,33 +22,34 @@ const Login = () => {
         const email = form.email.value;
         const password = form.password.value;
 
-        // firebase sign in send 
+
         signInUser(email, password)
-            .then(result => {
-                const singInInfo = {
+            .then(async result => {
+                const signInInfo = {
                     email,
                     lastSignInTime: result.user?.metadata?.lastSignInTime
+                };
+
+                try {
+                    await fetch("https://server-bloodbridge.vercel.app/get-users", {
+                        method: "PATCH",
+                        headers: { "content-type": "application/json" },
+                        body: JSON.stringify(signInInfo)
+                    });
+                } catch (err) {
+                    console.error("User login update failed:", err);
                 }
-                fetch('https://localhost:3000/get-users', {
-                    method: 'PATCH',
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-                    body: JSON.stringify(singInInfo)
-                })
-                    .then(res => res.json())
-                    .then(data => {
-                        showSuccess('Login Successful!', 'Welcome back!',)
-                        navigate(location.state || "/");
-                    })
+
+                setUser(result.user);
+                showSuccess("Login Successful!", "Welcome back!");
+                navigate(location.state?.from || "/");
             })
             .catch(error => {
-                const errorCode = error.code;
-                setError(errorCode)
-                showError('Login Failed', error.message)
-            })
+                setError(error.code);
+                showError("Login Failed", error.message);
+            });
     }
-
+    
     const handleGoogleLogIn = () => {
         googleLogIn()
             .then(result => {
@@ -76,7 +77,7 @@ const Login = () => {
     }
 
     return (
-        <div className='bg-orange-600 h-screen lg:flex relative'>
+        <div className='bg-[#10B981] h-screen lg:flex relative'>
             <Link to="/"><button className='btn btn-circle absolute right-4 top-4'>X</button></Link>
             <div className='w-5/12 hidden lg:block h-screen px-5 text-white text-center'>
                 <div className='lg:flex h-full flex-col items-center justify-center'>

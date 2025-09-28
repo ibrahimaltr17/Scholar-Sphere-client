@@ -32,6 +32,7 @@ export default function DashboardSidebar() {
         <NavItem to="/dashboard" label={`${role} Dashboard`} />
         {role === "admin" && (
           <>
+          <NavItem to="/dashboard/add-scholarship" label="Add Scholarship" />
             <NavItem to="/dashboard/all-users" label="All Users" />
             <NavItem to="/dashboard/all-blood-donation-request" label="All Blood Donation Request" />
             <NavItem to="/dashboard/content-management" label="Content Management" />
@@ -47,7 +48,7 @@ export default function DashboardSidebar() {
           </>
         )}
 
-        {role === "donor" && (
+        {role === "user" && (
           <>
             <NavItem to="/dashboard/my-donation-requests" label="My Donation Requests" />
             <NavItem to="/dashboard/create-donation-request" label="Create Donation Request" />

@@ -13,6 +13,8 @@ import MyRequest from "../pages/MyRequest/MyRequest";
 import CreateRequest from "../pages/CreateRequest/CreateRequest";
 import ProfilePage from "../pages/ProfilePage/ProfilePage";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import UpdateRequest from "../pages/UpdateRequest/UpdateRequest";
+import AddScholarship from "../pages/AddScholarship/AddScholarship";
 
 export const router = createBrowserRouter([
   {
@@ -48,9 +50,14 @@ export const router = createBrowserRouter([
             Component: MyRequest
           },
           {
-            path: 'create-donation-request',
-            Component: CreateRequest
+            path: 'add-scholarship',
+            Component: AddScholarship
           },
+          {
+            path: 'update-donation-request/:id',
+            Component: UpdateRequest
+          },
+
           {
             path: 'all-users',
             Component: ManageUser

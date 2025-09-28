@@ -3,12 +3,13 @@ import { Link, NavLink, useNavigate } from 'react-router';
 import './Navbar.css'
 import { AuthContext } from '../../context/AuthContext';
 import { showError, showWarning } from '../../utility/sweetAlert';
-import logo from '../../assets/logo.png'
+import logo from '../../assets/scholLogo.png'
 
 const Navbar = () => {
     const links = <>
-        <NavLink className='hover:text-amber-900 text-amber-900' to="/">Home</NavLink>
-        <NavLink className='hover:text-amber-900 text-amber-900' to="/dashboard">Dashboard</NavLink>
+        <NavLink className=' text-black lg:text-[#1cffb3]' to="/">Home</NavLink>
+        <NavLink className=' text-black lg:text-[#1cffb3]' to="/allScholarship">All Scholarship</NavLink>
+        <NavLink className=' text-black lg:text-[#1cffb3]' to="/dashboard">Dashboard</NavLink>
         {/* <NavLink className='hover:text-amber-900 text-amber-900' to="/addFood">Add Food </NavLink>
         <NavLink className='hover:text-amber-900 text-amber-900' to="/myFood">Manage My Foods</NavLink>
         <NavLink className='hover:text-amber-900 text-amber-900' to="/myRequestedFoods">My Food Request</NavLink> */}
@@ -28,7 +29,7 @@ const Navbar = () => {
     }
 
     return (
-        <div className="navbar w-full bg-red-100">
+        <div className="navbar w-full bg-[#1E3A8A]">
             <div className="navbar-start">
                 <div className="dropdown">
                     <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -42,7 +43,7 @@ const Navbar = () => {
                 </div>
                 <a href="">
                     <div className='flex items-center gap-2'>
-                        <img className='max-w-[120px]' src={logo} alt="" />
+                        <img className='max-w-[190px]' src={logo} alt="" />
                     </div>
                 </a>
             </div>
@@ -75,10 +76,10 @@ const Navbar = () => {
                 {
                     user ?
                         <Link to="/">
-                            <button onClick={handleLogOut} className="btn bg-orange-600 text-white">LogOut</button>
+                            <button onClick={handleLogOut} className="btn bg-[#10B981] text-white">LogOut</button>
                         </Link>
                         : <Link to="/login">
-                            <button className="btn bg-orange-600  text-white">Login</button>
+                            <button className="btn bg-[#10B981] text-white">Login</button>
                         </Link>
                 }
             </div>

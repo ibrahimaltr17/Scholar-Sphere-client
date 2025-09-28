@@ -1,22 +1,13 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { updateProfile } from 'firebase/auth';
 import { AuthContext } from '../../context/AuthContext';
 import { showError, showSuccess } from '../../utility/sweetAlert';
-import districtsData from '../../json/districts.json';
-import upazilasData from '../../json/upazilas.json';
 import axios from 'axios';
-
-const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 const Register = () => {
   const { createUser } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  const [districts, setDistricts] = useState([]);
-  const [upazilas, setUpazilas] = useState([]);
-  const [filteredUpazilas, setFilteredUpazilas] = useState([]);
-  const [selectedDistrictId, setSelectedDistrictId] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
   // Controlled form data state
@@ -24,33 +15,9 @@ const Register = () => {
     name: '',
     email: '',
     image: '',
-    blood: '',
-    district: '',
-    upazila: '',
     password: '',
     confirm_password: '',
   });
-
-  useEffect(() => {
-    setDistricts(districtsData);
-    setUpazilas(upazilasData);
-  }, []);
-
-  const handleDistrictChange = (e) => {
-    const selectedDistrictName = e.target.value;
-    setFormData(prev => ({ ...prev, district: selectedDistrictName, upazila: '' }));
-
-    const districtObj = districts.find(d => d.name === selectedDistrictName);
-    const districtId = districtObj ? districtObj.id : null;
-    setSelectedDistrictId(districtId);
-
-    if (districtId) {
-      const filtered = upazilas.filter(u => u.district_id === districtId);
-      setFilteredUpazilas(filtered);
-    } else {
-      setFilteredUpazilas([]);
-    }
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -59,7 +26,7 @@ const Register = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    const { name, email, password, confirm_password, blood, district, upazila, image } = formData;
+    const { name, email, password, confirm_password, image } = formData;
 
     if (password !== confirm_password) {
       return showError('Passwords do not match!');
@@ -82,10 +49,7 @@ const Register = () => {
         name,
         email,
         image,
-        blood,
-        district,
-        upazila,
-        role: 'donor',
+        role: 'user',
         status: 'active',
       };
 
@@ -101,7 +65,7 @@ const Register = () => {
 
   return (
     <div className="w-full max-w-2xl mx-auto bg-white p-8 shadow-lg rounded-lg my-10">
-      <h2 className="text-3xl font-bold text-center text-red-600 mb-6">Register</h2>
+      <h2 className="text-3xl font-bold text-center text-[#10B981] mb-6">Register</h2>
       <form onSubmit={handleSignUp} className="space-y-4">
         <input
           type="text"
@@ -130,42 +94,6 @@ const Register = () => {
           
           className="input input-bordered w-full"
         />
-        <select
-          name="blood"
-          value={formData.blood}
-          onChange={handleInputChange}
-          required
-          className="select select-bordered w-full"
-        >
-          <option value="">Select Blood Group</option>
-          {bloodGroups.map(b => (
-            <option key={b} value={b}>{b}</option>
-          ))}
-        </select>
-        <select
-          name="district"
-          value={formData.district}
-          onChange={handleDistrictChange}
-          required
-          className="select select-bordered w-full"
-        >
-          <option value="">Select District</option>
-          {districts.map(d => (
-            <option key={d.id} value={d.name}>{d.name}</option>
-          ))}
-        </select>
-        <select
-          name="upazila"
-          value={formData.upazila}
-          onChange={handleInputChange}
-          required
-          className="select select-bordered w-full"
-        >
-          <option value="">Select Upazila</option>
-          {filteredUpazilas.map(up => (
-            <option key={up.id} value={up.name}>{up.name}</option>
-          ))}
-        </select>
         <input
           type={showPassword ? 'text' : 'password'}
           name="password"
@@ -193,13 +121,13 @@ const Register = () => {
             checked={showPassword}
           />
         </label>
-        <button type="submit" className="btn bg-red-600 text-white w-full hover:bg-red-700">
+        <button type="submit" className="btn bg-[#10B981] text-white w-full hover:bg-[#10B981]">
           Register
         </button>
       </form>
       <p className="mt-4 text-center text-sm">
         Already have an account?{' '}
-        <Link to="/login" className="text-red-500 font-semibold">
+        <Link to="/login" className="text-[#10B981] font-semibold">
           Login
         </Link>
       </p>

@@ -2,12 +2,12 @@
     padding-inline: 12px;
     padding-block: 6px;
     border-radius: 6px;
-    background-color: #ff4400;
+    background-color: #10B981;
     font-weight: 700;
     color: white;
 }
 
 .menu-sm .active{
-    background-color: rgb(254, 74, 3);
+    background-color: #10B981;
     color: white;
 }

@@ -75,7 +75,7 @@ const ManageUser = () => {
               >
                 <option value="admin">Admin</option>
                 <option value="volunteer">Volunteer</option>
-                <option value="donor">Donor</option>
+                <option value="user">user</option>
               </select>
             </div>
           </div>

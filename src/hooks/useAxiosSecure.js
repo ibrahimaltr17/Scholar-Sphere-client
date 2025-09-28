@@ -1,22 +1,20 @@
 import axios from "axios";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
 
-
 const useAxiosSecure = () => {
-  const { user } = useContext(AuthContext);
-  console.log("🚀 ~ useAxiosSecure ~ accessToken:", user?.accessToken);
+  const { accessToken } = useContext(AuthContext);
+
   const instance = axios.create({
-    baseURL: "http://localhost:3000",
-    headers: {
-      Authorization: `Bearer ${user?.accessToken}`,
-    },
+    baseURL: "https://server-bloodbridge.vercel.app",
   });
 
-
-  useEffect(() => {
-  }, [])
-  
+  instance.interceptors.request.use((config) => {
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  });
 
   return instance;
 };
