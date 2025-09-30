@@ -38,9 +38,8 @@ export default function DashboardSidebar({ onClose }) {
             <NavItem to="/dashboard/all-users" label="Manage Users" />
             <NavItem
               to="/dashboard/scholarships"
-              label="Manage Applied Application"
+              label="Manage Scholarships"
             />
-            <NavItem to="/dashboard/content-management" label="Manage Applied Application" />
             <NavItem to="/dashboard/content-management" label="Manage Review" />
             <NavItem to="/dashboard/profile" label="Profile" />
           </>
@@ -59,8 +58,8 @@ export default function DashboardSidebar({ onClose }) {
 
         {role === "user" && (
           <>
-            <NavItem to="/dashboard/my-donation-requests" label="My Donation Requests" />
-            <NavItem to="/dashboard/create-donation-request" label="Create Donation Request" />
+            <NavItem to="/dashboard/my-applied-scholarships" label="My Applied Application" />
+            <NavItem to="/dashboard/my-reviews" label="My Review" />
             <NavItem to="/dashboard/profile" label="Profile" />
           </>
         )}

@@ -18,6 +18,11 @@ import AddScholarship from "../pages/AddScholarship/AddScholarship";
 import ManageScholarships from "../pages/ManageScholarships/ManageScholarships";
 import AllScholarships from "../pages/AllScholarship/AllScholarship";
 import ScholarshipDetails from "../pages/ScholarshipDetails/ScholarshipDetails";
+import Payment from "../pages/ApplyScholarship/ApplyScholarship";
+import ApplyScholarship from "../pages/ApplyScholarship/ApplyScholarship";
+import PaymentSuccess from "../pages/PaymentSuccess/PaymentSuccess";
+import MyAppliedScholarships from "../pages/MyAppliedScholarships/MyAppliedScholarships";
+import MyReviews from "../pages/MyReviews/MyReviews";
 
 export const router = createBrowserRouter([
   {
@@ -64,6 +69,14 @@ export const router = createBrowserRouter([
           {
             path: 'all-users',
             Component: ManageUser
+          },
+          {
+            path: "my-applied-scholarships",
+            Component: MyAppliedScholarships
+          },
+          {
+            path: "my-reviews",
+            Component: MyReviews,
           }
         ]
       },
@@ -74,7 +87,17 @@ export const router = createBrowserRouter([
       {
         path: '/scholarship/:id',
         Component: ScholarshipDetails
-      }
+      },
+      {
+        path: "/apply-scholarship/:id",
+        Component: ApplyScholarship,
+      },
+      {
+        path: "/payment-success",
+        Component: PaymentSuccess
+      },
+
+
     ]
   },
   {

@@ -90,12 +90,13 @@ export default function ScholarshipDetails() {
                     {/* Apply Button */}
                     <div className="flex justify-center mt-6">
                         <button
-                            onClick={() => alert("Apply Scholarship Clicked!")}
+                            onClick={() => navigate(`/apply-scholarship/${id}`)}
                             className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-10 py-3 rounded-full font-semibold shadow-lg hover:from-indigo-600 hover:to-blue-500 transition-all"
                         >
                             Apply Now
                         </button>
                     </div>
+
                 </div>
 
                 {/* Right Column: Financial Info */}
