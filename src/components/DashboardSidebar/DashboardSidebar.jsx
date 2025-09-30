@@ -1,7 +1,7 @@
 import { NavLink } from "react-router";
 import useRole from "../../hooks/useRole";
 
-export default function DashboardSidebar() {
+export default function DashboardSidebar({ onClose }) {
   const NavItem = ({ to, label }) => (
     <NavLink
       to={to}
@@ -11,6 +11,7 @@ export default function DashboardSidebar() {
           : "text-gray-700 hover:bg-red-50 hover:text-red-600"
         }`
       }
+      onClick={onClose} // closes sidebar on mobile
     >
       {label}
     </NavLink>
@@ -30,19 +31,27 @@ export default function DashboardSidebar() {
       <h2 className="text-xl font-semibold text-red-700 mb-6">Dashboard</h2>
       <nav className="flex flex-col gap-3">
         <NavItem to="/dashboard" label={`${role} Dashboard`} />
+
         {role === "admin" && (
           <>
-          <NavItem to="/dashboard/add-scholarship" label="Add Scholarship" />
-            <NavItem to="/dashboard/all-users" label="All Users" />
-            <NavItem to="/dashboard/all-blood-donation-request" label="All Blood Donation Request" />
-            <NavItem to="/dashboard/content-management" label="Content Management" />
+            <NavItem to="/dashboard/add-scholarship" label="Add Scholarship" />
+            <NavItem to="/dashboard/all-users" label="Manage Users" />
+            <NavItem
+              to="/dashboard/scholarships"
+              label="Manage Applied Application"
+            />
+            <NavItem to="/dashboard/content-management" label="Manage Applied Application" />
+            <NavItem to="/dashboard/content-management" label="Manage Review" />
             <NavItem to="/dashboard/profile" label="Profile" />
           </>
         )}
 
-        {role === "volunteer" && (
+        {role === "moderator" && (
           <>
-            <NavItem to="/dashboard/all-blood-donation-request" label="All Blood Donation Request" />
+            <NavItem
+              to="/dashboard/all-blood-donation-request"
+              label="All Blood Donation Request"
+            />
             <NavItem to="/dashboard/content-management" label="Content Management" />
             <NavItem to="/dashboard/profile" label="Profile" />
           </>

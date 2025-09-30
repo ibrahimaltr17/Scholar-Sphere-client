@@ -74,8 +74,8 @@ const ManageUser = () => {
                 className="select select-sm select-bordered w-40"
               >
                 <option value="admin">Admin</option>
-                <option value="volunteer">Volunteer</option>
-                <option value="user">user</option>
+                <option value="moderator">Moderator</option>
+                <option value="user">User</option>
               </select>
             </div>
           </div>

@@ -15,6 +15,9 @@ import ProfilePage from "../pages/ProfilePage/ProfilePage";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import UpdateRequest from "../pages/UpdateRequest/UpdateRequest";
 import AddScholarship from "../pages/AddScholarship/AddScholarship";
+import ManageScholarships from "../pages/ManageScholarships/ManageScholarships";
+import AllScholarships from "../pages/AllScholarship/AllScholarship";
+import ScholarshipDetails from "../pages/ScholarshipDetails/ScholarshipDetails";
 
 export const router = createBrowserRouter([
   {
@@ -38,8 +41,8 @@ export const router = createBrowserRouter([
             Component: ProfilePage
           },
           {
-            path: 'all-blood-donation-request',
-            Component: AllRequest
+            path: 'scholarships',
+            Component: ManageScholarships
           },
           {
             path: 'content-management',
@@ -63,8 +66,15 @@ export const router = createBrowserRouter([
             Component: ManageUser
           }
         ]
+      },
+      {
+        path: '/allScolarships',
+        Component: AllScholarships
+      },
+      {
+        path: '/scholarship/:id',
+        Component: ScholarshipDetails
       }
-
     ]
   },
   {

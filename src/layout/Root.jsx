@@ -5,7 +5,7 @@ import Navbar from '../components/Header/Navbar'
 const Root = () => {
 
   return (
-    <div>
+    <div className='space-y-20'>
       <Navbar></Navbar>
       <main className="overflow-x-clip">
         <Outlet></Outlet>

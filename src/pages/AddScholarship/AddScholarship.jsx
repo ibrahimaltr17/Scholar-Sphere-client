@@ -15,9 +15,9 @@ const AddScholarship = () => {
     subjectCategory: "",
     scholarshipCategory: "",
     degree: "",
-    tuitionFees: "",
-    applicationFees: "",
-    serviceCharge: "",
+    tuitionFees: "0",        // ✅ default numeric
+    applicationFees: "0",    // ✅ default numeric
+    serviceCharge: "0",      // ✅ default numeric
     applicationDeadline: "",
     postDate: new Date().toISOString().split("T")[0],
     postedBy: user?.email || "",
@@ -63,25 +63,21 @@ const AddScholarship = () => {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Ensure postedBy is always filled
-    const submissionData = {
-      ...formData,
-      postedBy: user?.email || "anonymous",
-    };
-
-    console.log("📦 Scholarship Form Data:", submissionData); // For testing
-
-    // Stop here if backend not ready
-    // return;
+    console.log("📦 Scholarship Form Data:", formData);
 
     try {
+      const token = await user.getIdToken(); // get Firebase ID token
+
       const res = await axios.post(
         "https://server-bloodbridge.vercel.app/scholarships",
-        submissionData
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ important
+          },
+        }
       );
 
       if (res.data.insertedId) {
@@ -97,9 +93,9 @@ const AddScholarship = () => {
           subjectCategory: "",
           scholarshipCategory: "",
           degree: "",
-          tuitionFees: "",
-          applicationFees: "",
-          serviceCharge: "",
+          tuitionFees: "0",
+          applicationFees: "0",
+          serviceCharge: "0",
           applicationDeadline: "",
           postDate: new Date().toISOString().split("T")[0],
           postedBy: user?.email || "",
@@ -256,7 +252,7 @@ const AddScholarship = () => {
             <label className="block font-semibold mb-1">Tuition Fees (Optional)</label>
             <input
               name="tuitionFees"
-              type="text"
+              type="number"
               value={formData.tuitionFees}
               onChange={handleChange}
               className="input input-bordered w-full"
@@ -266,7 +262,7 @@ const AddScholarship = () => {
             <label className="block font-semibold mb-1">Application Fees</label>
             <input
               name="applicationFees"
-              type="text"
+              type="number"
               value={formData.applicationFees}
               onChange={handleChange}
               className="input input-bordered w-full"
@@ -277,7 +273,7 @@ const AddScholarship = () => {
             <label className="block font-semibold mb-1">Service Charge</label>
             <input
               name="serviceCharge"
-              type="text"
+              type="number"
               value={formData.serviceCharge}
               onChange={handleChange}
               className="input input-bordered w-full"

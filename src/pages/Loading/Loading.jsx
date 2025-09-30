@@ -4,7 +4,7 @@ import React from 'react';
 const Loading = () => {
     return (
         <div className="flex justify-center items-center h-screen">
-            <span className="loading loading-bars loading-xl text-red-600"></span>
+            <span className="loading loading-bars loading-xl text-[#10B981]"></span>
         </div>
     );
 };

@@ -14,8 +14,8 @@ export default function Dashboard() {
   if (role === "user") {
     return <UserDashboard/>;
   }
-  if (role === "volunteer") {
-    return <div>Volunteer Dashboard</div>;
+  if (role === "moderator") {
+    return <div>moderator Dashboard</div>;
   }
 
   if (role === "admin") {
