@@ -11,6 +11,7 @@ const Home = () => {
             <TopScholarships></TopScholarships>
             <HowToApply></HowToApply>
             <FAQSection></FAQSection>
+            
         </div>
     );
 };

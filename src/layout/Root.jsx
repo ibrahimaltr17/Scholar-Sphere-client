@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router';
 import Navbar from '../components/Header/Navbar'
+import Footer from '../components/Footer/Footer';
 
 const Root = () => {
 
@@ -10,6 +11,7 @@ const Root = () => {
       <main className="overflow-x-clip">
         <Outlet></Outlet>
       </main>
+      <Footer></Footer>
     </div>
   );
 };
