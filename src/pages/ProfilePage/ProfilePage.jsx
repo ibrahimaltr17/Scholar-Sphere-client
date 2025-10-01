@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { showSuccess, showError } from "../../utility/sweetAlert";
+import Loading from "../Loading/Loading"
 
 const ProfilePage = () => {
   const { user } = useContext(AuthContext);
@@ -63,7 +64,7 @@ const ProfilePage = () => {
     }
   };
 
-  if (loading) return <p className="text-center mt-10">Loading profile...</p>;
+  if (loading) return <Loading></Loading>;
   if (!profile) return <p className="text-center mt-10">No profile data found.</p>;
 
   return (

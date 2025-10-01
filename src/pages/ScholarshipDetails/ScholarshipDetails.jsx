@@ -4,6 +4,7 @@ import { getAuth, getIdToken } from "firebase/auth";
 import axios from "axios";
 import Loading from "../Loading/Loading";
 import { FaMapMarkerAlt, FaCalendarAlt, FaMoneyBillWave } from "react-icons/fa";
+import ReviewCarousel from "../../components/ReviewCarousel/ReviewCarousel"; // import the review carousel component
 
 export default function ScholarshipDetails() {
     const { id } = useParams();
@@ -119,6 +120,11 @@ export default function ScholarshipDetails() {
                         </div>
                     </section>
                 </div>
+            </div>
+
+            {/* Reviews Carousel */}
+            <div className="mt-12">
+                <ReviewCarousel scholarshipId={id} />
             </div>
 
             {/* Back Button */}

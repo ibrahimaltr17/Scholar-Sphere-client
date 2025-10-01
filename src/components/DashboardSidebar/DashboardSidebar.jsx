@@ -7,8 +7,8 @@ export default function DashboardSidebar({ onClose }) {
       to={to}
       className={({ isActive }) =>
         `flex items-center px-5 py-3 rounded-lg font-medium text-sm transition-all duration-200 ${isActive
-          ? "bg-red-600 text-white shadow"
-          : "text-gray-700 hover:bg-red-50 hover:text-red-600"
+          ? "bg-[#10B981] text-white shadow"
+          : "text-gray-700 hover:bg-red-50 hover:text-[#10B981]"
         }`
       }
       onClick={onClose} // closes sidebar on mobile
@@ -28,7 +28,7 @@ export default function DashboardSidebar({ onClose }) {
 
   return (
     <aside className="w-64 min-h-screen bg-white shadow-md rounded-r-xl p-6 sticky top-0">
-      <h2 className="text-xl font-semibold text-red-700 mb-6">Dashboard</h2>
+      <h2 className="text-xl font-semibold text-[#10B981] mb-6">Dashboard</h2>
       <nav className="flex flex-col gap-3">
         <NavItem to="/dashboard" label={`${role} Dashboard`} />
 
@@ -47,20 +47,29 @@ export default function DashboardSidebar({ onClose }) {
 
         {role === "moderator" && (
           <>
+            <NavItem to="/dashboard/profile" label="My Profile" />
             <NavItem
+              to="/dashboard/scholarships"
+              label="Manage Scholarships"
+            />
+            <NavItem to="/dashboard/all-reviews" label="All Reviews" />
+            <NavItem to="/dashboard/all-applied-scholarships" label="All applied Scholarship" />
+            <NavItem to="/dashboard/add-scholarship" label="Add Scholarship" />
+            {/* <NavItem
               to="/dashboard/all-blood-donation-request"
               label="All Blood Donation Request"
             />
             <NavItem to="/dashboard/content-management" label="Content Management" />
-            <NavItem to="/dashboard/profile" label="Profile" />
+            <NavItem to="/dashboard/profile" label="Profile" /> */}
           </>
         )}
 
         {role === "user" && (
           <>
+            <NavItem to="/dashboard/profile" label="My Profile" />
             <NavItem to="/dashboard/my-applied-scholarships" label="My Applied Application" />
             <NavItem to="/dashboard/my-reviews" label="My Review" />
-            <NavItem to="/dashboard/profile" label="Profile" />
+
           </>
         )}
       </nav>

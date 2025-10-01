@@ -53,16 +53,22 @@ export default function ManageScholarships() {
   const handleUpdate = async (updatedScholarship) => {
     setIsSaving(true);
     try {
-      await axiosSecure.patch(`/scholarships/${updatedScholarship._id}`, updatedScholarship);
+      const { _id, ...updateData } = updatedScholarship; // remove _id
+
+      await axiosSecure.patch(`/scholarships/${_id}`, updateData);
+
       Swal.fire("Updated!", "Scholarship updated successfully.", "success");
       setIsEditing(false);
       queryClient.invalidateQueries(["scholarships"]);
     } catch (err) {
+      console.error("Update Error:", err.response?.data || err.message);
       Swal.fire("Error!", "Failed to update scholarship.", "error");
     } finally {
       setIsSaving(false);
     }
   };
+
+
 
   if (isLoading) return <p className="p-6">Loading scholarships...</p>;
   if (isError) return <p className="p-6 text-red-600">Failed to load scholarships.</p>;
@@ -74,7 +80,7 @@ export default function ManageScholarships() {
 
       <div className="overflow-x-auto rounded-lg shadow-lg">
         <table className="min-w-full bg-white">
-          <thead className="bg-red-600 text-white">
+          <thead className="bg-[#10B981] text-white">
             <tr>
               <th className="py-3 px-6 text-left">Scholarship Name</th>
               <th className="py-3 px-6 text-left">University</th>

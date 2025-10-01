@@ -23,6 +23,8 @@ import ApplyScholarship from "../pages/ApplyScholarship/ApplyScholarship";
 import PaymentSuccess from "../pages/PaymentSuccess/PaymentSuccess";
 import MyAppliedScholarships from "../pages/MyAppliedScholarships/MyAppliedScholarships";
 import MyReviews from "../pages/MyReviews/MyReviews";
+import AllReviews from "../pages/AllReviews/AllReviews";
+import AllAppliedScholarships from "../pages/AllAppliedScholarships/AllAppliedScholarships";
 
 export const router = createBrowserRouter([
   {
@@ -75,9 +77,19 @@ export const router = createBrowserRouter([
             Component: MyAppliedScholarships
           },
           {
+            path: "all-applied-scholarships",  // ✅ plural
+            Component: AllAppliedScholarships
+          }
+          ,
+          {
             path: "my-reviews",
             Component: MyReviews,
+          },
+          {
+            path: "all-reviews",
+            Component: AllReviews,
           }
+
         ]
       },
       {
