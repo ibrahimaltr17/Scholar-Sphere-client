@@ -1,6 +1,4 @@
-import {
-  createBrowserRouter,
-} from "react-router";
+import { createBrowserRouter } from "react-router";
 import Root from "../Layout/Root";
 import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
@@ -18,107 +16,54 @@ import AddScholarship from "../pages/AddScholarship/AddScholarship";
 import ManageScholarships from "../pages/ManageScholarships/ManageScholarships";
 import AllScholarships from "../pages/AllScholarship/AllScholarship";
 import ScholarshipDetails from "../pages/ScholarshipDetails/ScholarshipDetails";
-import Payment from "../pages/ApplyScholarship/ApplyScholarship";
 import ApplyScholarship from "../pages/ApplyScholarship/ApplyScholarship";
 import PaymentSuccess from "../pages/PaymentSuccess/PaymentSuccess";
 import MyAppliedScholarships from "../pages/MyAppliedScholarships/MyAppliedScholarships";
 import MyReviews from "../pages/MyReviews/MyReviews";
 import AllReviews from "../pages/AllReviews/AllReviews";
 import AllAppliedScholarships from "../pages/AllAppliedScholarships/AllAppliedScholarships";
+import PrivateRoute from "../Provider/PrivateRoute";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    Component: Root,
+    element: <Root />,
     children: [
+      { index: true, element: <Home /> },
+      { path: "/login", element: <Login /> },
+      { path: "/signup", element: <Register /> },
+      { path: "/all-Scholarships", element: <AllScholarships /> },
       {
-        index: true,
-        Component: Home
+        path: "/scholarship/:id", element: <PrivateRoute>
+          <ScholarshipDetails />
+        </PrivateRoute>
       },
+      { path: "/apply-scholarship/:id", element: <ApplyScholarship /> },
+      { path: "/payment-success", element: <PaymentSuccess /> },
+
+      // Private dashboard routes
       {
-        path: '/dashboard',
-        element: <DashboardLayout />,
+        path: "/dashboard",
+        element: (
+          <PrivateRoute>
+            <DashboardLayout />
+          </PrivateRoute>
+        ),
         children: [
-          {
-            index: true, // This sets the default dashboard page
-            Component: Dashboard
-          },
-          {
-            path: 'profile',
-            Component: ProfilePage
-          },
-          {
-            path: 'scholarships',
-            Component: ManageScholarships
-          },
-          {
-            path: 'content-management',
-            Component: ContentManagement
-          },
-          {
-            path: 'my-donation-requests',
-            Component: MyRequest
-          },
-          {
-            path: 'add-scholarship',
-            Component: AddScholarship
-          },
-          {
-            path: 'update-donation-request/:id',
-            Component: UpdateRequest
-          },
-
-          {
-            path: 'all-users',
-            Component: ManageUser
-          },
-          {
-            path: "my-applied-scholarships",
-            Component: MyAppliedScholarships
-          },
-          {
-            path: "all-applied-scholarships",  // ✅ plural
-            Component: AllAppliedScholarships
-          }
-          ,
-          {
-            path: "my-reviews",
-            Component: MyReviews,
-          },
-          {
-            path: "all-reviews",
-            Component: AllReviews,
-          }
-
-        ]
+          { index: true, element: <Dashboard /> },
+          { path: "profile", element: <ProfilePage /> },
+          { path: "scholarships", element: <ManageScholarships /> },
+          { path: "content-management", element: <ContentManagement /> },
+          { path: "my-donation-requests", element: <MyRequest /> },
+          { path: "add-scholarship", element: <AddScholarship /> },
+          { path: "update-donation-request/:id", element: <UpdateRequest /> },
+          { path: "all-users", element: <ManageUser /> },
+          { path: "my-applied-scholarships", element: <MyAppliedScholarships /> },
+          { path: "all-applied-scholarships", element: <AllAppliedScholarships /> },
+          { path: "my-reviews", element: <MyReviews /> },
+          { path: "all-reviews", element: <AllReviews /> },
+        ],
       },
-      {
-        path: '/allScolarships',
-        Component: AllScholarships
-      },
-      {
-        path: '/scholarship/:id',
-        Component: ScholarshipDetails
-      },
-      {
-        path: "/apply-scholarship/:id",
-        Component: ApplyScholarship,
-      },
-      {
-        path: "/payment-success",
-        Component: PaymentSuccess
-      },
-
-
-    ]
+    ],
   },
-  {
-    path: '/login',
-    Component: Login
-  },
-  {
-    path: '/signup',
-    Component: Register
-  },
-
 ]);

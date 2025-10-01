@@ -1,13 +1,10 @@
-// // import React, { useContext } from 'react';
-// import { AuthContext } from '../../context/AuthContext';
-
+import React from 'react';
+import Banner from '../../components/Banner/Banner';
 
 const Home = () => {
-    // const {user}=useContext(AuthContext)
-    // console.log(user.accessToken)
     return (
         <div>
-            <p>this is home</p>
+            <Banner></Banner>
         </div>
     );
 };

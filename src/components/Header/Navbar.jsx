@@ -8,7 +8,7 @@ import logo from '../../assets/scholLogo.png'
 const Navbar = () => {
     const links = <>
         <NavLink className=' text-black lg:text-[#1cffb3]' to="/">Home</NavLink>
-        <NavLink className=' text-black lg:text-[#1cffb3]' to="/allScolarships">All Scholarship</NavLink>
+        <NavLink className=' text-black lg:text-[#1cffb3]' to="/all-Scholarships">All Scholarship</NavLink>
         <NavLink className=' text-black lg:text-[#1cffb3]' to="/dashboard">Dashboard</NavLink>
         {/* <NavLink className='hover:text-amber-900 text-amber-900' to="/addFood">Add Food </NavLink>
         <NavLink className='hover:text-amber-900 text-amber-900' to="/myFood">Manage My Foods</NavLink>
