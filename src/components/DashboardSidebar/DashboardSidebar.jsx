@@ -34,14 +34,15 @@ export default function DashboardSidebar({ onClose }) {
 
         {role === "admin" && (
           <>
+            <NavItem to="/dashboard/profile" label="My Profile" />
             <NavItem to="/dashboard/add-scholarship" label="Add Scholarship" />
-            <NavItem to="/dashboard/all-users" label="Manage Users" />
             <NavItem
               to="/dashboard/scholarships"
               label="Manage Scholarships"
             />
-            <NavItem to="/dashboard/content-management" label="Manage Review" />
-            <NavItem to="/dashboard/profile" label="Profile" />
+            <NavItem to="/dashboard/all-applied-scholarships" label="All applied Scholarship" />
+            <NavItem to="/dashboard/all-users" label="Manage Users" />
+            <NavItem to="/dashboard/all-reviews" label="Manage Reviews" />
           </>
         )}
 
@@ -55,12 +56,6 @@ export default function DashboardSidebar({ onClose }) {
             <NavItem to="/dashboard/all-reviews" label="All Reviews" />
             <NavItem to="/dashboard/all-applied-scholarships" label="All applied Scholarship" />
             <NavItem to="/dashboard/add-scholarship" label="Add Scholarship" />
-            {/* <NavItem
-              to="/dashboard/all-blood-donation-request"
-              label="All Blood Donation Request"
-            />
-            <NavItem to="/dashboard/content-management" label="Content Management" />
-            <NavItem to="/dashboard/profile" label="Profile" /> */}
           </>
         )}
 

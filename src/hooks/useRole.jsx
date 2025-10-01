@@ -1,32 +1,41 @@
-// useRole.jsx
 import { useEffect, useState } from "react";
 import useAxiosSecure from "./useAxiosSecure";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
+import { getAuth, onIdTokenChanged } from "firebase/auth";
 
 export default function useRole() {
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(true);
-  const { accessToken } = useContext(AuthContext); // ✅ get token directly
+  const { accessToken } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
+  const auth = getAuth();
+
+  const fetchRole = async () => {
+    if (!auth.currentUser) return;
+    try {
+      setLoading(true);
+      const res = await axiosSecure.get("/get-user-role");
+      setRole(res.data.role);
+    } catch (err) {
+      console.error("Failed to fetch role:", err);
+      setRole("user");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (!accessToken) return; // wait until token is available
-
-    const fetchRole = async () => {
-      try {
-        const res = await axiosSecure.get("/get-user-role");
-        setRole(res.data.role);
-      } catch (error) {
-        console.error("Failed to fetch role:", error);
-        setRole(""); // optional
-      } finally {
-        setLoading(false);
-      }
-    };
-
+    if (!accessToken) return;
     fetchRole();
-  }, [accessToken]); // ✅ only run when accessToken changes
+
+    // ✅ refetch role when Firebase token changes
+    const unsubscribe = onIdTokenChanged(auth, () => {
+      fetchRole();
+    });
+
+    return () => unsubscribe();
+  }, [accessToken]);
 
   return { role, loading };
 }
