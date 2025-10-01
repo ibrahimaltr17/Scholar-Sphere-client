@@ -23,11 +23,13 @@ import MyReviews from "../pages/MyReviews/MyReviews";
 import AllReviews from "../pages/AllReviews/AllReviews";
 import AllAppliedScholarships from "../pages/AllAppliedScholarships/AllAppliedScholarships";
 import PrivateRoute from "../Provider/PrivateRoute";
+import Error from "../pages/Error/Error";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
+    errorElement: <Error></Error>,
     children: [
       { index: true, element: <Home /> },
       { path: "/login", element: <Login /> },

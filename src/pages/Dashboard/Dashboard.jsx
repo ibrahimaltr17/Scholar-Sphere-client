@@ -3,6 +3,7 @@ import useRole from "../../hooks/useRole";
 import AdminDashboard from "../AdminDashboard/AdminDashboard";
 import UserDashboard from "../UserDasboard/UserDashboard";
 import Loading from "../Loading/Loading";
+import ModeratorDashboard from "../ModeratorDashboard/ModeratorDashboard";
 
 export default function Dashboard() {
   const { role, loading } = useRole();
@@ -15,7 +16,7 @@ export default function Dashboard() {
     return <UserDashboard/>;
   }
   if (role === "moderator") {
-    return <div>moderator Dashboard</div>;
+    return <ModeratorDashboard></ModeratorDashboard>;
   }
 
   if (role === "admin") {
