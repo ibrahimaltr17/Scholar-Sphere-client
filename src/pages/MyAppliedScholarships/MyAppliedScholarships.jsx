@@ -3,6 +3,7 @@ import { getAuth, getIdToken } from "firebase/auth";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Loading from "../Loading/Loading";
+import { useNavigate } from "react-router";
 
 export default function MyAppliedScholarships() {
   const [applications, setApplications] = useState([]);
@@ -12,6 +13,7 @@ export default function MyAppliedScholarships() {
   const [reviewData, setReviewData] = useState({ rating: 0, comment: "" });
 
   const auth = getAuth();
+  const navigate = useNavigate();
 
   // Fetch applied scholarships
   useEffect(() => {
@@ -79,11 +81,11 @@ export default function MyAppliedScholarships() {
       Swal.fire("Cannot Edit", "Application is already processing or completed.", "info");
       return;
     }
-    window.location.href = `/apply-scholarship/${app.scholarshipId}`;
+    navigate(`/apply-scholarship/${app.scholarshipId}`);
   };
 
   const handleDetails = (app) => {
-    window.location.href = `/scholarship/${app.scholarshipId}`;
+    navigate(`/scholarship/${app.scholarshipId}`);
   };
 
   const handleAddReview = (app) => {
@@ -191,15 +193,14 @@ export default function MyAppliedScholarships() {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
-                    className={`px-3 py-1 rounded-full text-white text-xs font-semibold ${
-                      app.status === "pending"
+                    className={`px-3 py-1 rounded-full text-white text-xs font-semibold ${app.status === "pending"
                         ? "bg-yellow-500"
                         : app.status === "processing"
-                        ? "bg-blue-500"
-                        : app.status === "completed"
-                        ? "bg-green-500"
-                        : "bg-red-500"
-                    }`}
+                          ? "bg-blue-500"
+                          : app.status === "completed"
+                            ? "bg-green-500"
+                            : "bg-red-500"
+                      }`}
                   >
                     {app.status || "pending"}
                   </span>
