@@ -5,6 +5,7 @@ import FAQSection from '../../components/FAQSection/FAQSection';
 import HowToApply from '../../components/HowToApply/HowToApply';
 import TopRatedUniversities from '../../components/TopRatedUni/TopRatedUni';
 import RecentScholarships from '../../components/RecentScholarships/RecentScholarships';
+import SubscriptionPlans from '../../components/SubscriptionPlans/SubscriptionPlans';
 
 const Home = () => {
     return (
@@ -14,6 +15,7 @@ const Home = () => {
             <HowToApply></HowToApply>
             <TopRatedUniversities></TopRatedUniversities>
             <RecentScholarships></RecentScholarships>
+            <SubscriptionPlans></SubscriptionPlans>
             <FAQSection></FAQSection>
             
         </div>
