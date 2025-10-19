@@ -25,7 +25,7 @@ const ModeratorDashboard = () => {
     });
 
     return (
-        <div className="p-8 max-w-6xl mx-auto">
+        <div className="p-8 max-w-6xl mt-20 mx-auto">
             {/* Welcome Section */}
             <div className="text-center mb-10">
                 <h1 className="text-3xl md:text-4xl font-bold text-blue-700">

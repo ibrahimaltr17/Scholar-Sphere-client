@@ -38,7 +38,7 @@ export default function AllScholarships() {
     };
 
     return (
-        <div className="p-6 space-y-12 max-w-7xl mx-auto">
+        <div className="p-6 space-y-12 max-w-7xl mx-auto mt-20">
             {/* Search Box */}
             <div className="flex mb-6 max-w-2xl mx-auto">
                 <input

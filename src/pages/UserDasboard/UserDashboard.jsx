@@ -5,7 +5,7 @@ const UserDashboard = () => {
   const { user } = useContext(AuthContext);
 
   return (
-    <div className="p-6 text-center space-y-6">
+    <div className="p-6 text-center mt-20 space-y-6">
       <h1 className="text-3xl font-bold text-green-700">
         Hi {user?.displayName || user?.email}, Welcome to Your Dashboard 🌸
       </h1>

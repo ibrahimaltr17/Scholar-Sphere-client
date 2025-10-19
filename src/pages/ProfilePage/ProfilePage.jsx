@@ -68,7 +68,7 @@ const ProfilePage = () => {
   if (!profile) return <p className="text-center mt-10">No profile data found.</p>;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 md:p-10 bg-white rounded-xl shadow-md mt-10">
+    <div className="max-w-4xl mx-auto p-6 md:p-10 bg-white rounded-xl shadow-md mt-20">
       <h2 className="text-3xl font-bold mb-6 text-center">My Profile</h2>
 
       <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
