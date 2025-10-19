@@ -21,7 +21,7 @@ const Contact = () => {
     };
 
     return (
-        <section className="min-h-screen bg-gray-50 py-16 px-6 md:px-16">
+        <section className="min-h-screen bg-gray-50 my-20 py-16 px-6 md:px-16">
             {/* Heading */}
             <div className="text-center max-w-3xl mx-auto mb-12">
                 <h1 className="text-4xl font-bold text-[#1E3A8A] mb-4">Contact Us</h1>
@@ -103,9 +103,9 @@ const Contact = () => {
 
                     <div className="bg-white p-8 rounded-2xl shadow-lg">
                         <h2 className="text-2xl font-semibold text-[#10B981] mb-4">Working Hours</h2>
-                        <p className="text-gray-700 mb-2">Monday – Friday: 9:00 AM – 6:00 PM</p>
+                        <p className="text-gray-700 mb-2">Sunday – Thursday: 9:00 AM – 6:00 PM</p>
                         <p className="text-gray-700 mb-2">Saturday: 10:00 AM – 3:00 PM</p>
-                        <p className="text-gray-700 mb-2">Sunday: Closed</p>
+                        <p className="text-gray-700 mb-2">Friday: Closed</p>
                     </div>
                 </div>
             </div>

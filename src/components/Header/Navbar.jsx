@@ -6,13 +6,6 @@ import { showError, showWarning } from '../../utility/sweetAlert';
 import logo from '../../assets/scholLogo.png'
 
 const Navbar = () => {
-    const links = <>
-        <NavLink className=' text-black lg:text-[#1cffb3]' to="/">Home</NavLink>
-        <NavLink className=' text-black lg:text-[#1cffb3]' to="/all-Scholarships">All Scholarship</NavLink>
-        <NavLink className=' text-black lg:text-[#1cffb3]' to="/dashboard">Dashboard</NavLink>
-        <NavLink className=' text-black lg:text-[#1cffb3]' to="/about">About</NavLink>
-    </>
-
     const { user, logOut } = useContext(AuthContext)
     const navigate = useNavigate();
 
@@ -23,7 +16,6 @@ const Navbar = () => {
         }).catch((error) => {
             showError(error)
         });
-
     }
 
     return (
@@ -38,7 +30,15 @@ const Navbar = () => {
                     <ul
                         tabIndex={0}
                         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-32 p-2 shadow">
-                        {links}
+                        <NavLink className=' text-black lg:text-[#1cffb3]' to="/">Home</NavLink>
+                        <NavLink className=' text-black lg:text-[#1cffb3]' to="/all-Scholarships">All Scholarship</NavLink>
+                        {/* 3rd route for logged-out users */}
+                        {!user && <NavLink className=' text-black lg:text-[#1cffb3]' to="/about">About</NavLink>}
+                        {user && <>
+                            <NavLink className=' text-black lg:text-[#1cffb3]' to="/dashboard">Dashboard</NavLink>
+                            <NavLink className=' text-black lg:text-[#1cffb3]' to="/about">About</NavLink>
+                            <NavLink className=' text-black lg:text-[#1cffb3]' to="/contact">Contact</NavLink>
+                        </>}
                     </ul>
                 </div>
                 <a href="">
@@ -47,40 +47,46 @@ const Navbar = () => {
                     </div>
                 </a>
             </div>
+
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal text-md font-semibold flex gap-4 px-1 text-[#F1F8E9] items-center">
-                    {links}
+                    <NavLink className=' text-black lg:text-[#1cffb3]' to="/">Home</NavLink>
+                    <NavLink className=' text-black lg:text-[#1cffb3]' to="/all-Scholarships">All Scholarship</NavLink>
+                    {!user && <NavLink className=' text-black lg:text-[#1cffb3]' to="/about">About</NavLink>}
+                    {user && <>
+                        <NavLink className=' text-black lg:text-[#1cffb3]' to="/dashboard">Dashboard</NavLink>
+                        <NavLink className=' text-black lg:text-[#1cffb3]' to="/about">About</NavLink>
+                        <NavLink className=' text-black lg:text-[#1cffb3]' to="/contact">Contact</NavLink>
+                    </>}
                 </ul>
             </div>
+
             <div className="navbar-end flex gap-3">
                 <div className="dropdown dropdown-hover dropdown-left dropdown-center">
-                    {
-                        user ? <div className="avatar max-w-8">
-                            <div className="ring-primary bg-white ring-offset-base-100 w-12s rounded-full ring-2 ring-offset-2">
-                                <img src={user.photoURL ? user.photoURL :
-                                    "https://img.icons8.com/?size=48&id=84020&format=png"
-                                } />
-                            </div>
+                    {user && <div className="avatar max-w-8">
+                        <div className="ring-primary bg-white ring-offset-base-100 w-12s rounded-full ring-2 ring-offset-2">
+                            <img src={user.photoURL ? user.photoURL :
+                                "https://img.icons8.com/?size=48&id=84020&format=png"
+                            } />
                         </div>
-                            : <></>
-                    }
+                    </div>}
                     {user?.displayName && (
                         <p tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                             {user.displayName}
                         </p>
                     )}
                 </div>
-                {
-                    user ?
-                        <Link to="/">
-                            <button onClick={handleLogOut} className="btn bg-[#10B981] text-white">LogOut</button>
-                        </Link>
-                        : <Link to="/login">
-                            <button className="btn bg-[#10B981] text-white">Login</button>
-                        </Link>
+
+                {user ?
+                    <Link to="/">
+                        <button onClick={handleLogOut} className="btn bg-[#10B981] text-white">LogOut</button>
+                    </Link>
+                    :
+                    <Link to="/login">
+                        <button className="btn bg-[#10B981] text-white">Login</button>
+                    </Link>
                 }
             </div>
-
         </div>
     );
 };
