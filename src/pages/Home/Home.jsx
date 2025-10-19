@@ -6,6 +6,7 @@ import HowToApply from '../../components/HowToApply/HowToApply';
 import TopRatedUniversities from '../../components/TopRatedUni/TopRatedUni';
 import RecentScholarships from '../../components/RecentScholarships/RecentScholarships';
 import SubscriptionPlans from '../../components/SubscriptionPlans/SubscriptionPlans';
+import SuccessStories from '../../components/SuccessStories/SuccessStories';
 
 const Home = () => {
     return (
@@ -17,7 +18,7 @@ const Home = () => {
             <RecentScholarships></RecentScholarships>
             <SubscriptionPlans></SubscriptionPlans>
             <FAQSection></FAQSection>
-            
+            <SuccessStories></SuccessStories>
         </div>
     );
 };
