@@ -10,9 +10,7 @@ const Navbar = () => {
         <NavLink className=' text-black lg:text-[#1cffb3]' to="/">Home</NavLink>
         <NavLink className=' text-black lg:text-[#1cffb3]' to="/all-Scholarships">All Scholarship</NavLink>
         <NavLink className=' text-black lg:text-[#1cffb3]' to="/dashboard">Dashboard</NavLink>
-        {/* <NavLink className='hover:text-amber-900 text-amber-900' to="/addFood">Add Food </NavLink>
-        <NavLink className='hover:text-amber-900 text-amber-900' to="/myFood">Manage My Foods</NavLink>
-        <NavLink className='hover:text-amber-900 text-amber-900' to="/myRequestedFoods">My Food Request</NavLink> */}
+        <NavLink className=' text-black lg:text-[#1cffb3]' to="/about">About</NavLink>
     </>
 
     const { user, logOut } = useContext(AuthContext)
@@ -29,11 +27,13 @@ const Navbar = () => {
     }
 
     return (
-        <div className="navbar w-full bg-[#1E3A8A]">
+        <div className="navbar fixed top-0 left-0 w-full z-50 bg-[#1E3A8A]">
             <div className="navbar-start">
                 <div className="dropdown">
                     <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" /> </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
+                        </svg>
                     </div>
                     <ul
                         tabIndex={0}
@@ -53,7 +53,6 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="navbar-end flex gap-3">
-                {/* {<ThemeToggle></ThemeToggle>} */}
                 <div className="dropdown dropdown-hover dropdown-left dropdown-center">
                     {
                         user ? <div className="avatar max-w-8">
@@ -62,9 +61,7 @@ const Navbar = () => {
                                     "https://img.icons8.com/?size=48&id=84020&format=png"
                                 } />
                             </div>
-
                         </div>
-
                             : <></>
                     }
                     {user?.displayName && (

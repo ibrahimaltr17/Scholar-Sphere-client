@@ -24,6 +24,8 @@ import AllReviews from "../pages/AllReviews/AllReviews";
 import AllAppliedScholarships from "../pages/AllAppliedScholarships/AllAppliedScholarships";
 import PrivateRoute from "../Provider/PrivateRoute";
 import Error from "../pages/Error/Error";
+import About from "../pages/About/About";
+import Contact from "../pages/Contact/Contact";
 
 export const router = createBrowserRouter([
   {
@@ -66,6 +68,14 @@ export const router = createBrowserRouter([
           { path: "all-reviews", element: <AllReviews /> },
         ],
       },
+      {
+        path: "about",
+        Component: About
+      },
+      {
+        path: "contact",
+        Component: Contact
+      }
     ],
   },
 ]);
