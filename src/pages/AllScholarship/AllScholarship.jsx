@@ -8,9 +8,10 @@ import notFound from "../../assets/search not found.jpg";
 
 export default function AllScholarships() {
     const [searchTerm, setSearchTerm] = useState("");
+    const [sortOption, setSortOption] = useState(""); // For sorting
     const navigate = useNavigate();
 
-    // Fetch scholarships with Firebase token
+    // Fetch scholarships
     const fetchScholarships = async () => {
         const res = await axios.get(`https://server-bloodbridge.vercel.app/scholarships`);
         if (!Array.isArray(res.data)) return [];
@@ -24,12 +25,26 @@ export default function AllScholarships() {
 
     const scholarships = Array.isArray(scholarshipsData) ? scholarshipsData : [];
 
+    // Filter by search
     const filteredScholarships = scholarships.filter((sch) =>
         [sch.scholarshipName, sch.universityName, sch.degree]
             .join(" ")
             .toLowerCase()
             .includes(searchTerm.toLowerCase())
     );
+
+    // Sort scholarships
+    const sortedScholarships = [...filteredScholarships].sort((a, b) => {
+        if (sortOption === "deadline") {
+            return new Date(a.applicationDeadline) - new Date(b.applicationDeadline);
+        } else if (sortOption === "rating") {
+            const avgA = a.ratings?.length ? a.ratings.reduce((sum, r) => sum + Number(r), 0) / a.ratings.length : 0;
+            const avgB = b.ratings?.length ? b.ratings.reduce((sum, r) => sum + Number(r), 0) / b.ratings.length : 0;
+            return avgB - avgA; // descending
+        } else {
+            return 0; // no sorting
+        }
+    });
 
     const calculateAverageRating = (ratings = []) => {
         if (!Array.isArray(ratings) || ratings.length === 0) return 0;
@@ -39,38 +54,54 @@ export default function AllScholarships() {
 
     return (
         <div className="p-6 space-y-12 max-w-7xl mx-auto mt-20">
-            {/* Search Box */}
-            <div className="flex mb-6 max-w-2xl mx-auto">
-                <input
-                    type="text"
-                    placeholder="Search by Scholarship, University, or Degree"
-                    className="border p-3 flex-1 rounded-l-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <button
-                    className="bg-blue-600 text-white px-6 rounded-r-xl font-semibold shadow hover:bg-blue-700 transition-colors"
+            {/* Search & Sort */}
+            <div className="flex flex-col md:flex-row justify-between items-center mb-6 max-w-4xl mx-auto gap-4">
+                {/* Search Input */}
+                <div className="flex flex-1 shadow-sm rounded-lg overflow-hidden border border-gray-300">
+                    <input
+                        type="text"
+                        placeholder="Search scholarships, university, or degree..."
+                        className="flex-1 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <button
+                        className="bg-indigo-600 text-white px-5 py-3 font-semibold hover:bg-indigo-700 transition-colors"
+                    >
+                        Search
+                    </button>
+                </div>
+
+                {/* Sorting Dropdown */}
+                <select
+                    className="mt-3 md:mt-0 border border-gray-300 rounded-lg px-4 py-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-600"
+                    value={sortOption}
+                    onChange={(e) => setSortOption(e.target.value)}
                 >
-                    Search
-                </button>
+                    <option value="">Sort by</option>
+                    <option value="deadline">Deadline</option>
+                    <option value="rating">Rating</option>
+                </select>
             </div>
 
+            {/* Loading / Error / No results */}
             {isLoading && <Loading />}
             {isError && (
                 <p className="text-red-500 text-center">
                     Failed to load scholarships: {error.message}
                 </p>
             )}
-            {!isLoading && filteredScholarships.length === 0 && (
+            {!isLoading && sortedScholarships.length === 0 && (
                 <div className="text-center mt-20">
                     <img src={notFound} alt="No scholarships" className="mx-auto w-48" />
                     <p className="mt-4 text-gray-600 text-lg">No scholarships available.</p>
                 </div>
             )}
 
+            {/* Scholarship Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {!isLoading &&
-                    filteredScholarships.map((sch) => (
+                    sortedScholarships.map((sch) => (
                         <div
                             key={sch._id}
                             className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-transform transform hover:-translate-y-1 hover:scale-105 p-6 flex flex-col"
@@ -81,7 +112,7 @@ export default function AllScholarships() {
                                     alt={sch.universityName}
                                     className="w-full h-full object-cover"
                                 />
-                                <span className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-md">
+                                <span className="absolute top-2 left-2 bg-indigo-600 text-white text-xs px-3 py-1 rounded-full shadow-md">
                                     {sch.subjectCategory}
                                 </span>
                                 <span className="absolute top-2 right-2 bg-green-600 text-white text-xs px-3 py-1 rounded-full shadow-md">
@@ -105,7 +136,7 @@ export default function AllScholarships() {
                             </p>
 
                             <button
-                                className="mt-auto bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold px-5 py-2 rounded-full shadow-lg hover:from-indigo-600 hover:to-blue-500 transition-all"
+                                className="mt-auto bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold px-5 py-2 rounded-full shadow-lg hover:from-blue-500 hover:to-indigo-500 transition-all"
                                 onClick={() => navigate(`/scholarship/${sch._id}`)}
                             >
                                 View Details
