@@ -3,22 +3,23 @@ import Banner from '../../components/Banner/Banner';
 import TopScholarships from '../../components/TopScholarships/TopScholarships';
 import FAQSection from '../../components/FAQSection/FAQSection';
 import HowToApply from '../../components/HowToApply/HowToApply';
-import TopRatedUniversities from '../../components/TopRatedUni/TopRatedUni';
 import RecentScholarships from '../../components/RecentScholarships/RecentScholarships';
 import SubscriptionPlans from '../../components/SubscriptionPlans/SubscriptionPlans';
 import SuccessStories from '../../components/SuccessStories/SuccessStories';
+import UpcomingDeadlines from '../../components/UpcomingDeadlines/UpcomingDeadlines';
+
 
 const Home = () => {
     return (
         <div>
             <Banner></Banner>
             <TopScholarships></TopScholarships>
-            <HowToApply></HowToApply>
-            <TopRatedUniversities></TopRatedUniversities>
             <RecentScholarships></RecentScholarships>
+            <UpcomingDeadlines></UpcomingDeadlines>
+            <HowToApply></HowToApply>
+            <SuccessStories></SuccessStories>
             <SubscriptionPlans></SubscriptionPlans>
             <FAQSection></FAQSection>
-            <SuccessStories></SuccessStories>
         </div>
     );
 };

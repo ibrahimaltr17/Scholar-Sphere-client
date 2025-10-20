@@ -2,22 +2,23 @@ import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { showSuccess, showError } from "../../utility/sweetAlert";
-import Loading from "../Loading/Loading"
+import Loading from "../Loading/Loading";
+import { FaEdit, FaTimes, FaCheck } from "react-icons/fa";
 
 const ProfilePage = () => {
   const { user } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
 
   const [profile, setProfile] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
     avatar: "",
+    address: "",
+    bio: "",
   });
-  const [loading, setLoading] = useState(true);
 
-  // Fetch user profile
   useEffect(() => {
     if (user?.email) {
       axiosSecure
@@ -26,8 +27,9 @@ const ProfilePage = () => {
           setProfile(data);
           setFormData({
             name: data.name || "",
-            email: data.email || "",
-            avatar: data.image || "", // map "image" to "avatar"
+            avatar: data.image || "",
+            address: data.address || "",
+            bio: data.bio || "",
           });
           setLoading(false);
         })
@@ -43,19 +45,19 @@ const ProfilePage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleEditClick = () => setIsEditing(true);
-
-  const handleSaveClick = async () => {
+  const handleSave = async () => {
     try {
       const updateData = {
         name: formData.name,
-        image: formData.avatar, // send as "image" to backend
+        image: formData.avatar,
+        address: formData.address,
+        bio: formData.bio,
       };
       const res = await axiosSecure.patch("/update-user-profile", updateData);
       if (res.data.modifiedCount || res.data.matchedCount) {
         showSuccess("Success", "Profile updated successfully!");
         setProfile((prev) => ({ ...prev, ...updateData }));
-        setIsEditing(false);
+        setIsModalOpen(false);
       } else {
         showError("No changes made");
       }
@@ -64,99 +66,122 @@ const ProfilePage = () => {
     }
   };
 
-  if (loading) return <Loading></Loading>;
+  if (loading) return <Loading />;
   if (!profile) return <p className="text-center mt-10">No profile data found.</p>;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 md:p-10 bg-white rounded-xl shadow-md mt-20">
-      <h2 className="text-3xl font-bold mb-6 text-center">My Profile</h2>
+    <div className="max-w-3xl mx-auto mt-20 p-6 bg-white rounded-xl shadow-lg">
+      <div className="flex flex-col items-center gap-4">
+        {/* Avatar */}
+        {profile.image ? (
+          <img
+            src={profile.image}
+            alt="avatar"
+            className="w-32 h-32 rounded-full object-cover border-2 border-gray-300"
+          />
+        ) : (
+          <div className="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 text-xl border-2 border-gray-300">
+            👤
+          </div>
+        )}
 
-      <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
-        {/* Avatar Section */}
-        <div className="flex flex-col items-center md:items-start gap-4 w-full md:w-1/3">
-          {formData.avatar ? (
-            <img
-              src={formData.avatar}
-              alt="avatar"
-              className="w-32 h-32 rounded-full object-cover border-2 border-gray-300"
-            />
-          ) : (
-            <div className="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center text-gray-400 text-lg font-medium border-2 border-gray-300">
-              No Avatar
-            </div>
-          )}
-          {isEditing && (
-            <input
-              type="url"
-              name="avatar"
-              placeholder="Avatar image URL"
-              value={formData.avatar}
-              onChange={handleInputChange}
-              className="input input-bordered w-full max-w-xs"
-            />
-          )}
-        </div>
+        {/* Name */}
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-2">
+          {profile.name || "Anonymous"} <span>✨</span>
+        </h1>
 
-        {/* Form Section */}
-        <div className="flex-1 w-full">
-          <form className="flex flex-col gap-5">
-            {/* Name */}
-            <div>
-              <label className="block font-semibold mb-1">Name</label>
-              <input
-                name="name"
-                type="text"
-                value={formData.name}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-                className="input input-bordered w-full"
-              />
-            </div>
+        {/* Email */}
+        <p className="text-gray-600 text-sm md:text-base">📧 {profile.email}</p>
 
-            {/* Email */}
-            <div>
-              <label className="block font-semibold mb-1">Email</label>
-              <input
-                name="email"
-                type="email"
-                value={formData.email}
-                disabled
-                className="input input-bordered w-full bg-gray-100 cursor-not-allowed"
-              />
-            </div>
+        {/* Address */}
+        <p className="text-gray-600 text-sm md:text-base">📍 {profile.address || "Not added"}</p>
 
-            {/* Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 mt-4">
-              {!isEditing ? (
-                <button
-                  type="button"
-                  onClick={handleEditClick}
-                  className="btn btn-primary flex-1"
-                >
-                  Edit
-                </button>
-              ) : (
-                <>
-                  <button
-                    type="button"
-                    onClick={handleSaveClick}
-                    className="btn btn-success flex-1"
-                  >
-                    Save
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsEditing(false)}
-                    className="btn btn-outline flex-1"
-                  >
-                    Cancel
-                  </button>
-                </>
-              )}
-            </div>
-          </form>
-        </div>
+        {/* Bio / Description */}
+        <p className="text-gray-700 text-center text-sm md:text-base mt-2">
+          {profile.bio || "No bio added yet. Add something about yourself!"}
+        </p>
+
+        {/* Edit Button */}
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="mt-4 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 flex items-center gap-2"
+        >
+          <FaEdit /> Edit Profile
+        </button>
       </div>
+
+      {/* Edit Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white w-11/12 md:w-1/2 rounded-xl p-6 relative shadow-lg">
+            <h2 className="text-xl font-bold mb-4">Edit Profile ✏️</h2>
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
+            >
+              <FaTimes />
+            </button>
+
+            <div className="flex flex-col gap-4">
+              <label className="flex flex-col">
+                Name
+                <input
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="input input-bordered mt-1"
+                />
+              </label>
+
+              <label className="flex flex-col">
+                Avatar URL
+                <input
+                  name="avatar"
+                  value={formData.avatar}
+                  onChange={handleInputChange}
+                  className="input input-bordered mt-1"
+                />
+              </label>
+
+              <label className="flex flex-col">
+                Address
+                <input
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  className="input input-bordered mt-1"
+                />
+              </label>
+
+              <label className="flex flex-col">
+                Bio
+                <textarea
+                  name="bio"
+                  value={formData.bio}
+                  onChange={handleInputChange}
+                  rows={3}
+                  className="input input-bordered mt-1 resize-none"
+                />
+              </label>
+
+              <div className="flex gap-4 mt-4">
+                <button
+                  onClick={handleSave}
+                  className="flex-1 bg-green-500 text-white py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-green-600"
+                >
+                  <FaCheck /> Save
+                </button>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="flex-1 border border-gray-300 py-2 rounded-lg hover:bg-gray-100 flex items-center justify-center gap-2"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

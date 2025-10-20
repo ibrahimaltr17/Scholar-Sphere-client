@@ -1,69 +1,139 @@
-import { useContext } from "react";
+// src/pages/ModeratorDashboard/ModeratorDashboard.jsx
+import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { showError } from "../../utility/sweetAlert";
+import Loading from "../Loading/Loading";
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const ModeratorDashboard = () => {
     const { user } = useContext(AuthContext);
+    const axiosSecure = useAxiosSecure();
+    const [loading, setLoading] = useState(true);
 
-    // ✅ Fetch total scholarships
-    const { data: scholarshipStats } = useQuery({
-        queryKey: ["scholarshipStats"],
-        queryFn: async () => {
-            const res = await axios.get("https://server-bloodbridge.vercel.app/stats/scholarships");
-            return res.data;
-        },
+    const [recentScholarships, setRecentScholarships] = useState([]);
+    const [appliedScholarships, setAppliedScholarships] = useState([]);
+    const [applicationsByScholarship, setApplicationsByScholarship] = useState({
+        labels: [],
+        data: [],
     });
 
-    // ✅ Fetch total applications
-    const { data: applicationStats } = useQuery({
-        queryKey: ["applicationStats"],
-        queryFn: async () => {
-            const res = await axios.get("https://server-bloodbridge.vercel.app/stats/applications");
-            return res.data;
-        },
-    });
+    // Fetch dashboard data
+    const fetchDashboardData = async () => {
+        try {
+            setLoading(true);
+
+            const [scholarshipsRes, applicationsRes] = await Promise.all([
+                axiosSecure.get("/scholarships"),
+                axiosSecure.get("/applied-scholarships"),
+            ]);
+
+            // Recent scholarships (last 5)
+            setRecentScholarships(
+                scholarshipsRes.data
+                    .sort((a, b) => new Date(b.postDate) - new Date(a.postDate))
+                    .slice(0, 5)
+            );
+
+            // Applied scholarships (last 5)
+            setAppliedScholarships(
+                applicationsRes.data
+                    .sort((a, b) => new Date(b.appliedDate) - new Date(a.appliedDate))
+                    .slice(0, 5)
+            );
+
+            // Applications by Scholarship chart
+            const appCountByScholarship = {};
+            applicationsRes.data.forEach(app => {
+                const name = app.scholarship?.scholarshipName || "Unknown";
+                appCountByScholarship[name] = (appCountByScholarship[name] || 0) + 1;
+            });
+
+            setApplicationsByScholarship({
+                labels: Object.keys(appCountByScholarship),
+                data: Object.values(appCountByScholarship),
+            });
+
+            setLoading(false);
+        } catch (err) {
+            console.error(err);
+            showError("Failed to fetch dashboard data");
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchDashboardData();
+        // eslint-disable-next-line
+    }, []);
+
+    if (loading) return <Loading />;
 
     return (
-        <div className="p-8 max-w-6xl mt-20 mx-auto">
-            {/* Welcome Section */}
-            <div className="text-center mb-10">
-                <h1 className="text-3xl md:text-4xl font-bold text-blue-700">
-                    👋 Hi {user?.displayName || user?.email}, Welcome Back!
-                </h1>
-                <p className="mt-3 text-gray-600">
-                    Manage scholarships and track applications efficiently.
-                </p>
+        <div className="min-h-screen bg-gray-50 p-4 md:p-6 my-20">
+            <h1 className="text-3xl font-bold mb-6">Moderator Dashboard</h1>
+
+            {/* Applications by Scholarship Chart */}
+            <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold mb-4">Applications by Scholarship</h2>
+                <Bar
+                    data={{
+                        labels: applicationsByScholarship.labels,
+                        datasets: [
+                            {
+                                label: "# of Applications",
+                                data: applicationsByScholarship.data,
+                                backgroundColor: "rgba(59, 130, 246, 0.7)",
+                            },
+                        ],
+                    }}
+                    options={{
+                        responsive: true,
+                        plugins: {
+                            legend: { position: "top" },
+                            title: { display: true, text: "Applications per Scholarship" },
+                        },
+                    }}
+                />
             </div>
 
-            {/* Stats Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="card bg-base-100 shadow-xl">
-                    <div className="card-body text-center">
-                        <h2 className="card-title justify-center">🎓 Scholarships</h2>
-                        <p className="text-4xl font-bold text-blue-600">
-                            {scholarshipStats?.totalScholarships || 0}
-                        </p>
-                        <p className="text-gray-500">Total Scholarships Added</p>
-                    </div>
+                {/* Recent Scholarships */}
+                <div className="bg-white shadow-md rounded-lg p-6">
+                    <h2 className="text-xl font-semibold mb-4">Recent Scholarships</h2>
+                    <ul className="space-y-2">
+                        {recentScholarships.map(s => (
+                            <li key={s._id} className="flex justify-between border-b py-2">
+                                <span>{s.scholarshipName}</span>
+                                <span className="text-gray-500 text-sm">{new Date(s.postDate).toLocaleDateString()}</span>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
 
-                <div className="card bg-base-100 shadow-xl">
-                    <div className="card-body text-center">
-                        <h2 className="card-title justify-center">📑 Applications</h2>
-                        <p className="text-4xl font-bold text-green-600">
-                            {applicationStats?.totalApplications || 0}
-                        </p>
-                        <p className="text-gray-500">Scholarship Applications</p>
-                    </div>
+                {/* Recent Applied Scholarships */}
+                <div className="bg-white shadow-md rounded-lg p-6">
+                    <h2 className="text-xl font-semibold mb-4">Recent Applied Scholarships</h2>
+                    <ul className="space-y-2">
+                        {appliedScholarships.map(app => (
+                            <li key={app._id} className="flex justify-between border-b py-2">
+                                <span>{app.userName} → {app.scholarship?.scholarshipName}</span>
+                                <span className="text-gray-500 text-sm">{new Date(app.appliedDate).toLocaleDateString()}</span>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
-            </div>
-
-            {/* Quick Action */}
-            <div className="mt-10 text-center">
-                <button className="btn btn-primary btn-wide">
-                    ➕ Add New Scholarship
-                </button>
             </div>
         </div>
     );
