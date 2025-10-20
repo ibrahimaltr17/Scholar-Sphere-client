@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext'; // your AuthProvider path
+import { AuthContext } from '../context/AuthContext';
 import { Navigate, useLocation } from 'react-router';
 import Loading from '../pages/Loading/Loading';
 
@@ -7,16 +7,18 @@ const PrivateRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
   const location = useLocation();
 
+  // ✅ If still loading, show loader
   if (loading) {
-    return <Loading />; // show loader while checking auth
+    return <Loading />;
   }
 
-  if (user && user.email) {
-    return children; // user is logged in, show protected component
+  // ✅ Only redirect if not logged in AND loading is finished
+  if (!user || !user.email) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // user not logged in → redirect to login
-  return <Navigate to="/login" state={{ from: location }} replace />;
+  // ✅ User is logged in, show the protected route
+  return children;
 };
 
 export default PrivateRoute;

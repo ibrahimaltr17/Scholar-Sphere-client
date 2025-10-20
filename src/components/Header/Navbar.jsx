@@ -4,6 +4,7 @@ import './Navbar.css'
 import { AuthContext } from '../../context/AuthContext';
 import { showError, showWarning } from '../../utility/sweetAlert';
 import logo from '../../assets/scholLogo.png'
+import ThemeToggle from '../Theme/Theme';
 
 const Navbar = () => {
     const { user, logOut } = useContext(AuthContext)
@@ -59,6 +60,10 @@ const Navbar = () => {
                         <NavLink className=' text-black lg:text-[#1cffb3]' to="/contact">Contact</NavLink>
                     </>}
                 </ul>
+            </div>
+
+            <div>
+                <ThemeToggle></ThemeToggle>
             </div>
 
             <div className="navbar-end flex gap-3">

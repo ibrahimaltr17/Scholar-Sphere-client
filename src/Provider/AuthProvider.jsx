@@ -50,7 +50,7 @@ const AuthProvider = ({ children }) => {
   };
 
   const logOut = () => {
-    setAccessToken(null); 
+    setAccessToken(null);
     return signOut(auth);
   };
 
@@ -64,16 +64,16 @@ const AuthProvider = ({ children }) => {
 
         setAccessToken(token); // ✅ save in state
 
+        setUser(currentUser); // ✅ MINIMAL CHANGE: set user immediately to avoid flicker
+
+        // update user in backend in background
         axiosPublic
           .post("/get-users", {
             email: currentUser.email,
             role: "user",
             loginCount: 1,
           })
-          .then((res) => {
-            setUser(currentUser);
-            console.log(res.data);
-          });
+          .then((res) => console.log(res.data));
       } else {
         setUser(null);
         setAccessToken(null);

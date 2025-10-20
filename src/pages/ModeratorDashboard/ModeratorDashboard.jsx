@@ -14,6 +14,7 @@ import {
     Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { FaGraduationCap, FaUserCheck, FaChartBar } from "react-icons/fa";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -22,8 +23,8 @@ const ModeratorDashboard = () => {
     const axiosSecure = useAxiosSecure();
     const [loading, setLoading] = useState(true);
 
-    const [recentScholarships, setRecentScholarships] = useState([]);
-    const [appliedScholarships, setAppliedScholarships] = useState([]);
+    const [scholarships, setScholarships] = useState([]);
+    const [applications, setApplications] = useState([]);
     const [applicationsByScholarship, setApplicationsByScholarship] = useState({
         labels: [],
         data: [],
@@ -39,23 +40,15 @@ const ModeratorDashboard = () => {
                 axiosSecure.get("/applied-scholarships"),
             ]);
 
-            // Recent scholarships (last 5)
-            setRecentScholarships(
-                scholarshipsRes.data
-                    .sort((a, b) => new Date(b.postDate) - new Date(a.postDate))
-                    .slice(0, 5)
-            );
+            const scholarshipsData = scholarshipsRes.data || [];
+            const applicationsData = applicationsRes.data || [];
 
-            // Applied scholarships (last 5)
-            setAppliedScholarships(
-                applicationsRes.data
-                    .sort((a, b) => new Date(b.appliedDate) - new Date(a.appliedDate))
-                    .slice(0, 5)
-            );
+            setScholarships(scholarshipsData);
+            setApplications(applicationsData);
 
             // Applications by Scholarship chart
             const appCountByScholarship = {};
-            applicationsRes.data.forEach(app => {
+            applicationsData.forEach((app) => {
                 const name = app.scholarship?.scholarshipName || "Unknown";
                 appCountByScholarship[name] = (appCountByScholarship[name] || 0) + 1;
             });
@@ -73,63 +66,152 @@ const ModeratorDashboard = () => {
         }
     };
 
+    // Fetch every 30s for real-time updates
     useEffect(() => {
         fetchDashboardData();
+        const interval = setInterval(fetchDashboardData, 30000);
+        return () => clearInterval(interval);
         // eslint-disable-next-line
     }, []);
 
     if (loading) return <Loading />;
 
-    return (
-        <div className="min-h-screen bg-gray-50 p-4 md:p-6 my-20">
-            <h1 className="text-3xl font-bold mb-6">Moderator Dashboard</h1>
+    // Processed data
+    const totalScholarships = scholarships.length;
+    const activeScholarships = scholarships.filter(
+        (s) => s.status?.toLowerCase() === "active"
+    ).length;
 
-            {/* Applications by Scholarship Chart */}
-            <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold mb-4">Applications by Scholarship</h2>
+    const recentScholarships = scholarships
+        .sort((a, b) => new Date(b.postDate) - new Date(a.postDate))
+        .slice(0, 5);
+
+    const recentApplications = applications
+        .sort((a, b) => new Date(b.appliedDate) - new Date(a.appliedDate))
+        .slice(0, 5);
+
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 p-6 md:p-10 my-20">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row justify-between items-center mb-10">
+                <div>
+                    <h1 className="text-3xl font-bold text-gray-800">
+                        👋 Welcome back,{" "}
+                        <span className="text-blue-600">{user?.displayName || "Moderator"}</span>
+                    </h1>
+                    <p className="text-gray-500 mt-1">Here’s your live dashboard overview</p>
+                </div>
+            </div>
+
+            {/* Summary Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div className="bg-white rounded-2xl p-6 shadow hover:shadow-lg transition">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-gray-500">Total Scholarships</p>
+                            <h3 className="text-2xl font-bold text-gray-800">{totalScholarships}</h3>
+                        </div>
+                        <FaGraduationCap className="text-blue-500 text-4xl" />
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-6 shadow hover:shadow-lg transition">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-gray-500">Active Scholarships</p>
+                            <h3 className="text-2xl font-bold text-gray-800">{activeScholarships}</h3>
+                        </div>
+                        <FaChartBar className="text-yellow-500 text-4xl" />
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-6 shadow hover:shadow-lg transition">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-gray-500">Total Applications</p>
+                            <h3 className="text-2xl font-bold text-gray-800">{applications.length}</h3>
+                        </div>
+                        <FaUserCheck className="text-green-500 text-4xl" />
+                    </div>
+                </div>
+            </div>
+
+            {/* Chart Section */}
+            <div className="bg-white rounded-2xl shadow p-6 mb-10">
+                <h2 className="text-xl font-semibold mb-4 text-gray-800">
+                    📊 Applications by Scholarship
+                </h2>
                 <Bar
                     data={{
                         labels: applicationsByScholarship.labels,
                         datasets: [
                             {
-                                label: "# of Applications",
+                                label: "Applications",
                                 data: applicationsByScholarship.data,
                                 backgroundColor: "rgba(59, 130, 246, 0.7)",
+                                borderRadius: 6,
                             },
                         ],
                     }}
                     options={{
                         responsive: true,
                         plugins: {
-                            legend: { position: "top" },
-                            title: { display: true, text: "Applications per Scholarship" },
+                            legend: { display: false },
                         },
                     }}
                 />
             </div>
 
+            {/* Recent Lists */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Recent Scholarships */}
-                <div className="bg-white shadow-md rounded-lg p-6">
-                    <h2 className="text-xl font-semibold mb-4">Recent Scholarships</h2>
-                    <ul className="space-y-2">
-                        {recentScholarships.map(s => (
-                            <li key={s._id} className="flex justify-between border-b py-2">
-                                <span>{s.scholarshipName}</span>
-                                <span className="text-gray-500 text-sm">{new Date(s.postDate).toLocaleDateString()}</span>
+                <div className="bg-white rounded-2xl shadow p-6">
+                    <h2 className="text-xl font-semibold mb-4 text-gray-800">🎓 Recent Scholarships</h2>
+                    <ul className="divide-y divide-gray-200">
+                        {recentScholarships.map((s) => (
+                            <li
+                                key={s._id}
+                                className="py-3 flex justify-between items-center hover:bg-gray-50 px-2 rounded-lg transition"
+                            >
+                                <div>
+                                    <p className="font-medium text-gray-800">{s.scholarshipName}</p>
+                                    <p className="text-sm text-gray-500">
+                                        Posted: {new Date(s.postDate).toLocaleDateString()}
+                                    </p>
+                                </div>
+                                <span
+                                    className={`px-3 py-1 text-xs rounded-full ${s.status === "active"
+                                            ? "bg-green-100 text-green-700"
+                                            : "bg-gray-100 text-gray-600"
+                                        }`}
+                                >
+                                    {s.status || "N/A"}
+                                </span>
                             </li>
                         ))}
                     </ul>
                 </div>
 
-                {/* Recent Applied Scholarships */}
-                <div className="bg-white shadow-md rounded-lg p-6">
-                    <h2 className="text-xl font-semibold mb-4">Recent Applied Scholarships</h2>
-                    <ul className="space-y-2">
-                        {appliedScholarships.map(app => (
-                            <li key={app._id} className="flex justify-between border-b py-2">
-                                <span>{app.userName} → {app.scholarship?.scholarshipName}</span>
-                                <span className="text-gray-500 text-sm">{new Date(app.appliedDate).toLocaleDateString()}</span>
+                {/* Recent Applications */}
+                <div className="bg-white rounded-2xl shadow p-6">
+                    <h2 className="text-xl font-semibold mb-4 text-gray-800">📝 Recent Applications</h2>
+                    <ul className="divide-y divide-gray-200">
+                        {recentApplications.map((app) => (
+                            <li
+                                key={app._id}
+                                className="py-3 flex justify-between items-center hover:bg-gray-50 px-2 rounded-lg transition"
+                            >
+                                <div>
+                                    <p className="font-medium text-gray-800">
+                                        <span className="text-blue-600">{app.userName}</span> applied for{" "}
+                                        <span className="font-semibold text-gray-900">
+                                            {app.scholarship?.scholarshipName || "N/A"}
+                                        </span>
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                        {new Date(app.appliedDate).toLocaleDateString()}
+                                    </p>
+                                </div>
                             </li>
                         ))}
                     </ul>
