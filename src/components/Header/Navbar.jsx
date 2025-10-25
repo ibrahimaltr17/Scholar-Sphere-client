@@ -4,6 +4,7 @@ import './Navbar.css'
 import { AuthContext } from '../../context/AuthContext';
 import { showError, showWarning } from '../../utility/sweetAlert';
 import logo from '../../assets/scholLogo.png'
+import logo2 from '../../assets/scholLogo2.png'
 import ThemeToggle from '../Theme/Theme';
 
 const Navbar = () => {
@@ -33,7 +34,6 @@ const Navbar = () => {
                         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-32 p-2 shadow">
                         <NavLink className=' text-black lg:text-[#1cffb3]' to="/">Home</NavLink>
                         <NavLink className=' text-black lg:text-[#1cffb3]' to="/all-Scholarships">All Scholarship</NavLink>
-                        {/* 3rd route for logged-out users */}
                         {!user && <NavLink className=' text-black lg:text-[#1cffb3]' to="/about">About</NavLink>}
                         {user && <>
                             <NavLink className=' text-black lg:text-[#1cffb3]' to="/dashboard">Dashboard</NavLink>
@@ -42,9 +42,14 @@ const Navbar = () => {
                         </>}
                     </ul>
                 </div>
-                <a href="">
-                    <div className='flex items-center gap-2'>
-                        <img className='max-w-[190px]' src={logo} alt="" />
+
+                {/* Logo Section */}
+                <a href="/">
+                    <div className="flex items-center gap-2">
+                        {/* Desktop Logo */}
+                        <img src={logo} alt="Logo" className="hidden md:block max-w-[190px]" />
+                        {/* Mobile Logo */}
+                        <img src={logo2} alt="Mobile Logo" className="block md:hidden max-w-[50px]" />
                     </div>
                 </a>
             </div>
@@ -62,11 +67,8 @@ const Navbar = () => {
                 </ul>
             </div>
 
-            <div>
-                <ThemeToggle></ThemeToggle>
-            </div>
-
             <div className="navbar-end flex gap-3">
+                <ThemeToggle></ThemeToggle>
                 <div className="dropdown dropdown-hover dropdown-left dropdown-center">
                     {user && <div className="avatar max-w-8">
                         <div className="ring-primary bg-white ring-offset-base-100 w-12s rounded-full ring-2 ring-offset-2">

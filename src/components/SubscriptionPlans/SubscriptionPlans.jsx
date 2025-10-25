@@ -1,5 +1,5 @@
 import React from "react";
-import { Star, Bell, Heart, Crown, CheckCircle } from "lucide-react";
+import { Star, Bell, Crown, CheckCircle } from "lucide-react";
 
 const plans = [
     {
@@ -25,9 +25,9 @@ const plans = [
             "Save favorite scholarships",
             "Email alerts & reminders",
         ],
-        buttonText: "Subscribe Now",
         buttonStyle:
             "bg-gradient-to-r from-pink-500 to-indigo-500 text-white hover:from-pink-600 hover:to-indigo-600 transition",
+        buttonText: "Subscribe Now",
     },
     {
         name: "Elite",
@@ -39,20 +39,20 @@ const plans = [
             "Early access to scholarships",
             "1:1 counselor support",
         ],
-        buttonText: "Upgrade Now",
         buttonStyle:
             "bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 transition",
+        buttonText: "Upgrade Now",
     },
 ];
 
 const SubscriptionPlans = () => {
     return (
-        <section className="bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 py-16 px-6 md:px-12 lg:px-20">
+        <section className=" py-16 px-6 md:px-12 lg:px-20 transition-colors duration-500">
             <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                <h2 className="text-3xl md:text-4xl font-bold text-base-content mb-4">
                     Unlock Premium Features
                 </h2>
-                <p className="text-gray-600 max-w-2xl mx-auto">
+                <p className="text-base-content/70 max-w-2xl mx-auto">
                     Get personalized scholarship alerts, early access, and dedicated
                     application tracking. Choose the best plan that fits your journey.
                 </p>
@@ -62,20 +62,20 @@ const SubscriptionPlans = () => {
                 {plans.map((plan, index) => (
                     <div
                         key={index}
-                        className={`rounded-3xl shadow-lg p-8 text-center transition transform hover:scale-105 ${plan.highlight
-                                ? "bg-white border-4 border-pink-400"
-                                : "bg-white border border-gray-200"
+                        className={`rounded-3xl shadow-lg p-8 text-center transition-transform transform hover:scale-105 ${plan.highlight
+                                ? "bg-base-100 dark:bg-base-200 border-4 border-primary"
+                                : "bg-base-100 dark:bg-base-200 border border-base-300 dark:border-base-400"
                             }`}
                     >
                         <div className="flex justify-center mb-6">{plan.icon}</div>
-                        <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+                        <h3 className="text-2xl font-semibold text-base-content mb-2">
                             {plan.name}
                         </h3>
-                        <p className="text-lg font-medium text-gray-500 mb-4">
+                        <p className="text-lg font-medium text-base-content/70 mb-4">
                             {plan.price}
                         </p>
 
-                        <ul className="space-y-2 mb-6 text-gray-600 text-sm text-left inline-block">
+                        <ul className="space-y-2 mb-6 text-base-content/70 text-sm text-left inline-block">
                             {plan.features.map((feature, i) => (
                                 <li key={i} className="flex items-center gap-2">
                                     <CheckCircle className="text-green-500 w-4 h-4" />

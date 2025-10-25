@@ -21,7 +21,7 @@ const RecentScholarships = () => {
     if (isLoading) return <Loading />;
     if (isError)
         return (
-            <p className="text-red-500 text-center">
+            <p className="text-error text-center mt-6">
                 Failed to load scholarships: {error.message}
             </p>
         );
@@ -33,36 +33,38 @@ const RecentScholarships = () => {
 
     return (
         <section className="p-6 max-w-6xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">
+            <h2 className="text-2xl md:text-3xl font-bold text-center text-base-content mb-6">
                 Recently Added Scholarships
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {recentScholarships.map((sch) => (
                     <div
                         key={sch._id}
-                        className="bg-white rounded-xl shadow-md hover:shadow-lg transition-transform transform hover:-translate-y-1 p-4 flex flex-col items-center text-center"
+                        className="bg-base-100 rounded-2xl shadow-lg hover:shadow-xl transition-transform transform hover:-translate-y-1 hover:scale-105 p-6 flex flex-col items-center text-center"
                     >
                         {/* University Logo */}
-                        <div className="h-20 w-20 mb-3">
+                        <div className="h-20 w-20 mb-4 rounded-full overflow-hidden bg-white dark:bg-black p-2 flex items-center justify-center">
                             <img
                                 src={sch.universityImage}
                                 alt={sch.universityName}
-                                className="h-full w-full object-contain rounded-full bg-gray-100 p-2"
+                                className="h-full w-full object-contain rounded-full"
                             />
                         </div>
 
                         {/* University Name */}
-                        <h3 className="text-lg font-semibold text-gray-800 mb-1">{sch.universityName}</h3>
+                        <h3 className="text-lg font-semibold text-base-content mb-1">
+                            {sch.universityName}
+                        </h3>
 
                         {/* Post Date */}
-                        <p className="text-gray-400 text-sm mb-3">
+                        <p className="text-base-content/60 text-sm mb-4">
                             Posted: {new Date(sch.postDate).toLocaleDateString()}
                         </p>
 
-                        {/* View Details */}
+                        {/* View Details Button */}
                         <button
-                            className="bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-full shadow hover:bg-green-700 transition-colors"
+                            className="btn btn-primary btn-sm w-full"
                             onClick={() => navigate(`/scholarship/${sch._id}`)}
                         >
                             View Details
