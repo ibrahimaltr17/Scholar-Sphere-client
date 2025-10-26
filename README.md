@@ -7,8 +7,8 @@
 
 ## 🌐 Live Demo
 
-- **Frontend:** [Live Link Here](https://your-frontend-live-link.com)  
-- **Backend (API):** [Live Link Here](https://your-backend-live-link.com)
+- **Frontend:** [Live Link Here](https://blood-bridge-4acbe.web.app/)  
+
 
 ---
 
@@ -61,4 +61,4 @@ Scholar Sphere is designed to provide a **centralized, user-friendly platform**:
 - **Hosting & Deployment:** Vercel (frontend) & Render/Netlify (backend)
 
 ---
-![Scholar Sphere Landing Page](frontend/public/landing-page.png)
+![Scholar Sphere Landing Page](https://i.ibb.co.com/8DDR49Xp/full-page-snap-screenshot-3.png)
