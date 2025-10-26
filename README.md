@@ -61,4 +61,7 @@ Scholar Sphere is designed to provide a **centralized, user-friendly platform**:
 - **Hosting & Deployment:** Vercel (frontend) & Render/Netlify (backend)
 
 ---
-![Scholar Sphere Landing Page](https://i.ibb.co.com/8DDR49Xp/full-page-snap-screenshot-3.png)
+![Scholar Sphere Landing Page]<a href="https://your-live-site.com">
+  <img src="https://i.ibb.co/8DDR49Xp/full-page-snap-screenshot-3.png" alt="Scholar Sphere Landing Page" width="800"/>
+</a>
+
